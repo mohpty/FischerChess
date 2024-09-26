@@ -1,0 +1,3 @@
+$('#createGame').click(()=>{
+    alert("WEEEEEEOOOOO!")
+})
