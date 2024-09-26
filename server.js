@@ -16,22 +16,26 @@ app.set('view engine', 'hbs');
 app.use(express.static('public'));
 
 
+const getRandomNumber = (min, max) => {
+  return Math.random() * (max - min) + min
+}
 
 io.on('connection', (socket) => {
   console.log(socket.id, ' is connected');
   
   // Room creation
   socket.on('createRoom', (roomId) => {
+    do{
+      roomId = Math.round(getRandomNumber(1,1000000));
+    }
+    while(rooms[roomId])
+
     if (!rooms[roomId]){
       rooms[roomId] = {players:[], board:null};
       socket.join(roomId);
       rooms[roomId].players.push(socket.id);
 
-      roomObj = {
-        'id': roomId,
-        'colors': [socket.id]
-      };
-      socket.emit('roomCreated', roomObj);
+      socket.emit('roomCreated', roomId);
       console.log(`Room created: ${roomId}`)
     }
     else{
@@ -42,7 +46,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', (roomId) => {
-    console.log("Trying to join")
+    console.log("Trying to join", roomId)
     if (rooms[roomId] && rooms[roomId].players.length < 2){
       socket.join(roomId);
       rooms[roomId].players.push(socket.id);

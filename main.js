@@ -231,15 +231,16 @@ socket.on('roomExists', data => {
 socket.on('joinedRoom', data =>{
   clr = 1;
   board.flip();
+
+  $('.matchMakingButtons').remove();
 })
 socket.on('startGame', data => {
-
+  $('.matchMakingButtons').remove();
   game = new Chess();
   gameId = data.roomId;
   board.start();
   updatePGN();
   updateStatus();
-  $('.matchMakingButtons').remove();
 })
 
 socket.on('gameState', data => {
@@ -255,6 +256,6 @@ $('#createGame').click(()=>{
 })
 
 $('#joinGame').click(()=>{
-  socket.emit('joinRoom', 1);
-  $('.matchMakingButtons').remove();
+
+  socket.emit('joinRoom', $('#gameId').val());
 })
