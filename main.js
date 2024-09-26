@@ -1,9 +1,10 @@
 const socket = io('http://localhost:3000')
-const game = new Chess()
-
-socket.onAny((event, ...args) => {
-  console.log(event, args);
-});
+var game = new Chess()
+var clr;
+var gameId;
+// socket.onAny((event, ...args) => {
+//   console.log(event, args);
+// });
 // the board object is "dumb":
 // - shows the current position from the game
 // - handles input events from users
@@ -17,11 +18,14 @@ const boardConfig = {
   touchMove: true
 }
 const board = Chessboard2('myBoard', boardConfig)
-
 updateStatus()
-
+$('#resetButton').click(()=>{
+  board.start();
+  game = new Chess(); 
+  updatePGN();
+  updateStatus();
+})
 let pendingMove = null
-
 // There are 5 outcomes from this action:
 // - start a pending move
 // - clear a pending move
@@ -59,14 +63,18 @@ function onTouchSquare (square, piece, boardInfo) {
     if (moveResult) {
       // clear circles on the board
       board.clearCircles()
-
+      console.log(moveResult);
       // update to the new position
       board.position(game.fen()).then(() => {
         updatePGN()
         updateStatus()
 
         // wait a smidge, then make a random move for Black
-        window.setTimeout(makeRandomMove, 250)
+        // window.setTimeout(makeRandomMove, 250)
+        // socket.on('moved', data => {
+        //   console.log(data);
+        // })
+
       })
 
     // if the move was not legal, then start a new pendingMove from this square
@@ -124,8 +132,8 @@ function onDragStart (dragStartEvt) {
   // do not pick up pieces if the game is over
   if (game.game_over()) return false
 
-  // only pick up pieces for White
-  if (!isWhitePiece(dragStartEvt.piece)) return false
+  // only pick up pieces for same color
+  if (!isWhitePiece(dragStartEvt.piece) != clr) return false
 
   // what moves are available to White from this square?
   const legalMoves = game.moves({
@@ -144,19 +152,20 @@ function onDragStart (dragStartEvt) {
 
 function isWhitePiece (piece) { return /^w/.test(piece) }
 
-function makeRandomMove () {
-  const possibleMoves = game.moves()
+// function makeRandomMove () {
+//   const possibleMoves = game.moves()
 
-  // game over
-  if (possibleMoves.length === 0) return
+//   // game over
+//   if (possibleMoves.length === 0) return
 
-  const randomIdx = Math.floor(Math.random() * possibleMoves.length)
-  game.move(possibleMoves[randomIdx])
-  board.position(game.fen(), (_positionInfo) => {
-    updateStatus()
-    updatePGN()
-  })
-}
+//   const randomIdx = Math.floor(Math.random() * possibleMoves.length)
+//   game.move(possibleMoves[randomIdx])
+//   board.position(game.fen(), (_positionInfo) => {
+//     updateStatus()
+//     updatePGN()
+//   })
+// }
+
 
 function onDrop (dropEvt) {
   // see if the move is legal
@@ -180,7 +189,16 @@ function onDrop (dropEvt) {
       updatePGN()
 
       // make a random legal move for black
-      window.setTimeout(makeRandomMove, 250)
+      // window.setTimeout(makeRandomMove, 250)
+      var data = {
+        'roomId': gameId,
+        'move': move,
+        'gameFen': game.fen(),
+        'gamePGN': game.pgn(),
+        'turn': game.turn(),
+        'gameOver': game.game_over()
+      };
+      socket.emit('pieceMoved', data);
     })
   } else {
     // reset the pending move
@@ -196,3 +214,47 @@ function onDrop (dropEvt) {
 function onSnapEnd () {
   board.position(game.fen())
 }
+
+
+// Onlinneeeee
+socket.on('roomCreated', id => {
+  clr = 0;
+  console.log(`Server told me that a room has been created with id of ${id}`);
+  $('.matchMakingButtons').text('Waiting for player to join');
+});
+
+socket.on('roomExists', data => {
+  console.log("Room already exists", data[1]);
+  $('.matchMakingStatus').text('Game has been created already');
+})
+
+socket.on('joinedRoom', data =>{
+  clr = 1;
+  board.flip();
+})
+socket.on('startGame', data => {
+
+  game = new Chess();
+  gameId = data.roomId;
+  board.start();
+  updatePGN();
+  updateStatus();
+  $('.matchMakingButtons').remove();
+})
+
+socket.on('gameState', data => {
+  // alert('gameState');
+  game.move(data.move);
+  board.position(data.gameFen);
+  updatePGN();
+  updateStatus();
+})
+
+$('#createGame').click(()=>{
+  socket.emit('createRoom', 1);
+})
+
+$('#joinGame').click(()=>{
+  socket.emit('joinRoom', 1);
+  $('.matchMakingButtons').remove();
+})

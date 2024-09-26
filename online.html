@@ -16,7 +16,7 @@
     
     <nav class="navbar navbar-expand-lg bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand text-light" href="#">FischerChess</a>
+        <a class="navbar-brand text-light" href="index.html">FischerChess</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -38,7 +38,30 @@
         </div>
       </div>
     </nav>
-    
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 ">
+                    <div class="matchMakingButtons mx-auto text-center py-4">
+                        <button id='createGame' class='btn btn-primary'>Create game</button>
+                        <button id='joinGame' class='btn btn-success'>Join game</button>
+                    </div>
+                    <div id='matchMakingStatus' class="container mx-auto text-center">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="container mx-auto py-4" style="width:540px">
+                        <div class="chessBoard">
+                            <div id="myBoard" style="width: 400px"></div>
+                            <p id="gameStatus"></p>
+                            <h4>Game PGN:</h4>
+                            <div id="gamePGN" style="font-family: monospace"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
         crossorigin="anonymous"></script>
@@ -55,14 +78,10 @@
   integrity="sha384-8sJV/krC8iV2g7t0PolQxFVckDtxhfM5gNHNAFPG2ZS/bScudOjfsB8ewhG2xle8"
   crossorigin="anonymous"></script>
 
-<div id="myBoard" style="width: 400px"></div>
-<p id="gameStatus"></p>
-<h4>Game PGN:</h4>
-<div id="gamePGN" style="font-family: monospace"></div>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script type="module" src="/main.js"></script>
-    <script type="module" src="/online.js"></script>
+    <!-- <script type="module" src="/online.js"></script> -->
   </body>
 </html>
