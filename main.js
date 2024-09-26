@@ -219,8 +219,8 @@ function onSnapEnd () {
 // Onlinneeeee
 socket.on('roomCreated', id => {
   clr = 0;
-  console.log(`Server told me that a room has been created with id of ${id}`);
-  $('.matchMakingButtons').text('Waiting for player to join');
+  console.log(`A room has been created with id of ${id}`);
+  $('.matchMakingStatus').text(`Room Id: ${id}\nWaiting for player to join`);
 });
 
 socket.on('roomExists', data => {
@@ -235,10 +235,11 @@ socket.on('joinedRoom', data =>{
   $('.matchMakingButtons').remove();
 })
 socket.on('startGame', data => {
-  $('.matchMakingButtons').remove();
   game = new Chess();
   gameId = data.roomId;
   board.start();
+  $('.matchMakingButtons').remove();
+  $('#matchMakingStatus').remove();
   updatePGN();
   updateStatus();
 })

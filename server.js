@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
       }
       socket.emit('joinedRoom', roomId);
 
-      socket.to(roomId).emit('startGame', {'roomId': roomId});
+      io.emit('startGame', {'roomId': roomId});
       console.log(`Player joined room: ${roomId}`);
     }
     else{
