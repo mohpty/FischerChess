@@ -76,7 +76,7 @@ router.post('/login', (req, res) => {
     });
 
     // Set session data
-    req.session.user = user.username; // Store username in session
+    req.session.user = user.id; // Store username in session
     req.flash('success_msg', 'Logged in successfully');
     res.redirect('/play');
   });

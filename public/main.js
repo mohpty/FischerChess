@@ -253,10 +253,10 @@ socket.on('gameState', data => {
 })
 
 $('#createGame').click(()=>{
-  socket.emit('createRoom', USER);
+  socket.emit('createRoom', {user:parseInt(USER)});
 })
 
 $('#joinGame').click(()=>{
 
-  socket.emit('joinRoom', $('#gameId').val());
+  socket.emit('joinRoom', {roomId:$('#gameId').val(), user:parseInt(USER)});
 })
