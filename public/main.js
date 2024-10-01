@@ -253,7 +253,7 @@ socket.on('gameState', data => {
 })
 
 $('#createGame').click(()=>{
-  socket.emit('createRoom', 1);
+  socket.emit('createRoom', USER);
 })
 
 $('#joinGame').click(()=>{

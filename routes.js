@@ -13,6 +13,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/play', (req, res) => {
+    console.log(req.session.user)
+    console.log(req.session)
     res.render('play', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
@@ -30,8 +32,6 @@ router.get('/login', (req, res) => {
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
         session: {user: req.session.user}});
-    req.session.error = null;
-    console.log(req.session.error)
     // console.log(res.session.error)
     // if(req.session.error) req.session.error = null;
     // delete res.session.success;
@@ -43,7 +43,7 @@ router.get('/signup', (req, res) => {
         req.flash('error_msg', 'User is already logged in')
         res.redirect('/');
     }
-    
+
     res.render('signup', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
@@ -55,14 +55,23 @@ router.get('/signup', (req, res) => {
 
 
 // Example route to set session data
-router.get('/set-session', (req, res) => {
-    req.session.username = 'JohnDoe'; // Set session data
-    res.send('Session data set!');
-});
+// router.get('/set-session', (req, res) => {
+//     req.session.username = 'JohnDoe'; // Set session data
+//     res.send('Session data set!');
+// });
 
 // Example route to get session data
 router.get('/get-session', (req, res) => {
-    res.send(`Username from session: ${req.session.username}`);
+    if(req.session.user){
+        res.status(200).json({
+            user: req.session.user
+        });
+    }
+    else{
+        res.status(403).json({
+            user: null
+        })
+    }
 });
 
 // Export the router

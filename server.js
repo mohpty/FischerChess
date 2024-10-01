@@ -35,7 +35,7 @@ const sessionStore = new MySQLStore({}, mysqlConnection);
 
 // Session configuration
 app.use(session({
-  key: 'session_cookie_name',
+  key: 'session_cookie',
   secret: 'ABC_DEFGHIJKLMNOPQRSTUVWX_YZ', // Change to a strong secret
   store: sessionStore,
   resave: false,
@@ -45,16 +45,6 @@ app.use(session({
   }
 }));
 
-// Use the routes
-app.use('/', routes); // Use the imported routes
-app.use('/user', userRoutes); // Use the user routes
-
-
-// Expose user data to all template
-app.use(function(req, res, next) {
-  res.locals.user = req.session.user;
-  next();
-});
 
 // Connect to MySQL
 mysqlConnection.connect(err => {
@@ -67,6 +57,18 @@ mysqlConnection.connect(err => {
 
 // Set up Socket.IO
 const io = setupSocket(server); // Call the setupSocket function and pass the server instance
+
+// Use the routes
+app.use('/', routes); // Use the imported routes
+app.use('/user', userRoutes); // Use the user routes
+
+
+// Expose user data to all template
+app.use(function(req, res, next) {
+  res.locals.user = req.session.user;
+  next();
+});
+
 
 server.listen(3000, () => {
     console.log("Server is listening on port 3000");
