@@ -1,0 +1,62 @@
+<div class="container-fluid ps-md-0">
+  <div class="row g-0">
+    <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+    <div class="col-md-8 col-lg-6">
+      <div class="login d-flex align-items-center py-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-9 col-lg-8 mx-auto">
+              <h3 class="login-heading mb-4">Welcome back!</h3>
+
+              <!-- Sign In Form -->
+              <form action='/user/login' method="POST">
+              <% if(success_msg.length > 0) { %>
+                  <div class="alert alert-success">
+                      <%= success_msg %>
+                  </div>
+              <% } %>
+              
+              <% if(error_msg.length > 0) { %>
+                  <div class="alert alert-danger">
+                      <%= error_msg %>
+                  </div>
+              <% } %>
+                <div class="form-floating mb-3">
+                  <input name='email' type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                  <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input name='password' type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                  <label for="floatingPassword">Password</label>
+                </div>
+
+                <div class="form-check mb-3">
+                  <input name='remember' class="form-check-input" type="checkbox" value="" id="rememberPasswordCheck">
+                  <label class="form-check-label" for="rememberPasswordCheck">
+                    Remember password
+                  </label>
+                </div>
+
+                <div class="d-grid">
+                  <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
+                  <div class="text-center">
+                    <a class="small" href="#">Forgot password?</a>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+      // Wait for 1 minute (60,000 milliseconds)
+      setTimeout(function() {
+          $('.dangaa').empty(); // Change #myElement to your actual element's ID or class
+      }, 1000); // 1 minute
+  });
+</script>
