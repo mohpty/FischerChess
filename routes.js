@@ -7,21 +7,29 @@ router.get('/', (req, res) => {
     // console.log(req.session)
     res.render('index', { 
         success_msg: req.flash('success_msg'), 
-        error_msg: req.flash('error_msg')});
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}});
     // delete res.session.success;
 });
 
 router.get('/play', (req, res) => {
     res.render('play', { 
         success_msg: req.flash('success_msg'), 
-        error_msg: req.flash('error_msg')});
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}
+    });
     // delete res.session.success;
 });
 
 router.get('/login', (req, res) => {
+    if (req.session.user){
+        req.flash('error_msg', 'User is already logged in')
+        res.redirect('/');
+    }
     res.render('login', { 
         success_msg: req.flash('success_msg'), 
-        error_msg: req.flash('error_msg')});
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}});
     req.session.error = null;
     console.log(req.session.error)
     // console.log(res.session.error)
@@ -31,9 +39,15 @@ router.get('/login', (req, res) => {
 
 
 router.get('/signup', (req, res) => {
+    if (req.session.user){
+        req.flash('error_msg', 'User is already logged in')
+        res.redirect('/');
+    }
+    
     res.render('signup', { 
         success_msg: req.flash('success_msg'), 
-        error_msg: req.flash('error_msg')});
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}});
     
     // if(req.session.error) delete req.session.error;
     // delete req.session.success;

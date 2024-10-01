@@ -66,6 +66,15 @@ router.post('/login', (req, res) => {
       return res.status(400).redirect('/login');
     }
 
+
+    // Create a cookie for the frontend (optional: customize options as needed)
+    res.cookie('Authorization', user.username, { 
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      httpOnly: true, // Helps mitigate XSS
+      secure: process.env.NODE_ENV === 'production', // Use secure cookie in production
+      // sameSite: 'Strict' // CSRF protection
+    });
+
     // Set session data
     req.session.user = user.username; // Store username in session
     req.flash('success_msg', 'Logged in successfully');
@@ -80,9 +89,8 @@ router.post('/logout', (req, res) => {
       req.flash('error_msg', 'Could not log out');
       return res.status(500).redirect('index');
     }
-    
-    req.flash('success_msg', 'Logged out successfully');
-    res.redirect('index');
+    // req.flash('success_msg', 'Logged out successfully');
+    res.redirect('/login');
   });
 });
 

@@ -20,11 +20,7 @@ app.use(express.static('public'));
 app.use(express.json()); // For parsing application/json
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 
-// Expose user data to all template
-app.use(function(req, res, next) {
-  res.locals.user = req.session.user;
-  next();
-});
+
 
 // MySQL DB configuration
 const mysqlConnection = mysql.createConnection({
@@ -49,6 +45,17 @@ app.use(session({
   }
 }));
 
+// Use the routes
+app.use('/', routes); // Use the imported routes
+app.use('/user', userRoutes); // Use the user routes
+
+
+// Expose user data to all template
+app.use(function(req, res, next) {
+  res.locals.user = req.session.user;
+  next();
+});
+
 // Connect to MySQL
 mysqlConnection.connect(err => {
   if (err) {
@@ -60,10 +67,6 @@ mysqlConnection.connect(err => {
 
 // Set up Socket.IO
 const io = setupSocket(server); // Call the setupSocket function and pass the server instance
-
-// Use the routes
-app.use('/', routes); // Use the imported routes
-app.use('/user', userRoutes); // Use the user routes
 
 server.listen(3000, () => {
     console.log("Server is listening on port 3000");
