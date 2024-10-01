@@ -20,6 +20,12 @@ app.use(express.static('public'));
 app.use(express.json()); // For parsing application/json
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 
+// Expose user data to all template
+app.use(function(req, res, next) {
+  res.locals.user = req.session.user;
+  next();
+});
+
 // MySQL DB configuration
 const mysqlConnection = mysql.createConnection({
   host: 'localhost',

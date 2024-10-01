@@ -32,12 +32,26 @@
             <li class="nav-item">
               <a class="nav-link text-light" aria-current="page" href="#">Community</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="/login">Login</a>
-            </li>
-            <li class="nav-item"></li>
-              <a class="nav-link text-light" href="/register">Register</a>
-            </li>
+            <div class="alert alert-danger">
+                  <%= error_msg %>
+                </div>
+                <!-- <% if(req.session.username){ %>
+                  <li class="nav-item">
+                    <a class="nav-link text-light" href="/login">Login</a>
+                  </li>
+                  <li class="nav-item"></li>
+                    <a class="nav-link text-light" href="/signup">Register</a>
+                  </li>
+                  <% } %>
+                <%if(!req.session.username){ %>
+                  <li class="nav-item"></li>
+                    <form action="/user/logout" method="POST">
+                      <button class="nav-link text-light">Logout</button>
+                      <!-- <input class="nav-link text-light" href="/user/logout">Logout</a> -->
+                    </form>
+                  </li>                  
+                <%}%> -->
+                
           </ul>
         </div>
       </div>

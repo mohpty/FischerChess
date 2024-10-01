@@ -21,11 +21,11 @@ router.post('/signup', async (req, res) => {
     if (err){
       req.flash('error_msg', 'Database error');
       // res.locals.message = req.flash();
-      return res.status(500).redirect('register')
+      return res.status(500).redirect('signup')
     };
     if (results.length > 0){
       req.flash('error_msg', 'Username already exists');
-      return res.status(400).redirect('register');
+      return res.status(400).redirect('signup');
     } 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -34,10 +34,10 @@ router.post('/signup', async (req, res) => {
     mysqlConnection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
       if (err){
         req.flash('error_msg', 'Database error');
-        return res.status(500).render('register')
+        return res.status(500).redirect('signup')
       };
       req.flash('success_msg', 'User created successfully');
-      res.status(201).redirect('login');
+      res.status(201).redirect('/login');
     });
   });
 });
@@ -67,9 +67,9 @@ router.post('/login', (req, res) => {
     }
 
     // Set session data
-    req.session.username = user.username; // Store username in session
-    req.flash('error_msg', 'Logged in successfully');
-    res.redirect('play');
+    req.session.user = user.username; // Store username in session
+    req.flash('success_msg', 'Logged in successfully');
+    res.redirect('/play');
   });
 });
 
