@@ -1,0 +1,3 @@
+<img class="toggler-icon" src="img/toggler.svg" style="
+    color: white;
+">

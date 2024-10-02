@@ -94,3 +94,6 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+#toggler{
+  filter: brightness(0) saturate(100%) invert(100%) sepia(26%) saturate(137%) hue-rotate(112deg) brightness(109%) contrast(101%);
+}
