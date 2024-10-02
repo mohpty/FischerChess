@@ -37,17 +37,17 @@
               <li class="nav-item">
                 <form action="/user/logout" method="POST" class="d-inline">
                   <div class='nav-link align-middle py-1'>
-                    <button type="submit" class="text-light btn btn-link text-decoration-none" style="border: none; padding: 0;">Logout</button>
+                    <button type="submit" class="btn btn-danger text-decoration-none" style="">Logout</button>
                   </div>
                 </form>
               </li>
             <% } else { %>
+              <li class="nav-item">
+                <a class="nav-link text-light" href="/signup">Signup</a>
+              </li>
               <!-- User is not authenticated -->
               <li class="nav-item">
                 <a class="nav-link text-light" href="/login">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-light" href="/signup">Register</a>
               </li>
             <% } %>
           </ul>
