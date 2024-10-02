@@ -238,6 +238,7 @@ socket.on('startGame', data => {
   game = new Chess();
   gameId = data.roomId;
   board.start();
+  $('#gameStatus').show();
   $('.matchMakingButtons').remove();
   $('#matchMakingStatus').remove();
   updatePGN();

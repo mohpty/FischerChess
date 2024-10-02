@@ -1,23 +1,38 @@
 <section>
-    <div class="container">
-        <div class="row">
-            <div class="col-12 ">
-                <div class="matchMakingButtons mx-auto text-center py-4">
-                    <button id='createGame' class='btn btn-primary'>Create game</button>
-                    <br>
-                    <input id='gameId' type="number" placeholder="Enter Room Id">
-                    <button id='joinGame' class='btn btn-success my-2'>Join game</button>
+    <div class="container-fluid" style="background-color:whitesmoke">
+        <div class="container">
+            <div class="row my-4" style='padding-top:25px;'>
+                <div class="col-8 border">
+                    <div class="container py-2">
+                        <div class="chessBoard">
+                            <div id="myBoard" style="width: 600px; margin:auto"></div>
+                        </div>
+                    </div>
                 </div>
-                <div id='matchMakingStatus' class="container mx-auto text-center">
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="container mx-auto py-4" style="width:540px">
-                    <div class="chessBoard">
-                        <div id="myBoard" style="width: 400px"></div>
-                        <p id="gameStatus"></p>
-                        <h4>Game PGN:</h4>
+                <div class="col-4 border">
+                    <div class="container border">
+                        <div class="matchMakingButtons mx-auto text-center py-4">
+                            <button id='createGame' class='btn btn-primary'>Create game</button>
+                            <br>
+                            <input id='gameId' type="number" placeholder="Enter Room Id">
+                            <button id='joinGame' class='btn btn-success my-2'>Join game</button>
+                        </div>
+                        <div id='matchMakingStatus' class="container mx-auto text-center">
+                        </div>
+                        
+                    </div>
+                    <div class="container">
+                        <p id="gameStatus" style='display:none;'></p>
+                        <!-- <h4>Game PGN:</h4> -->
                         <div id="gamePGN" style="font-family: monospace"></div>
+                    </div>
+                </div>
+    
+    
+                <div class="col-12 ">
+                </div>
+                <div class="col-12">
+                    <div class="container mx-auto py-4" style="width:540px">
                     </div>
                 </div>
             </div>
