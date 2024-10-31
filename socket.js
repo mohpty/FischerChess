@@ -36,61 +36,135 @@ function setupSocket(server) {
 
         // Room creation
         socket.on('createRoom', (data) => {
-            do {
-                roomId = Math.round(getRandomNumber(1, 1000000));
-            } while (rooms[roomId]);
+            /*
+            Will create an issue when implementing matchmaking
+            The current situation is that if you created a game you can't create another,
+            or join another, but it should be modified so that you can join, but not create
+            KEEP THAT IN MIND
+            */
+            console.log(data);
+            const user_id = data.user;
+            var query;
+            var room_id;
 
-            if (!rooms[roomId]) {
-                rooms[roomId] = { players: [], board: null };
-                socket.join(roomId);
-                console.log("PLAYAAA 1", data.user)
-                rooms[roomId].players.push(data.user);
-
-                socket.emit('roomCreated', roomId);
-                console.log(`Room created: ${roomId}`);
-            } else {
-                socket.emit("roomExists", [roomId, rooms[roomId]]);
-            }
-        });
-
-        // Room joining
-        socket.on('joinRoom', (data) => {
-            var roomId = data.roomId;
-            console.log("Trying to join", roomId);
-            if (rooms[roomId] && rooms[roomId].players.length < 2) {
-                socket.join(roomId);
-                rooms[roomId].players.push(data.user);
-
-                // Randomize player colors
-                if (Math.round(Math.random())) {
-                    rooms[roomId].players.reverse();
+            // - Check if the user is on another room -> current_game == null
+            query = "SELECT current_game from users WHERE id = ?";
+            db.query(query, [user_id], (err,results) => {
+                if (err){
+                    console.error("Error Checking current game of the user, ", err);
+                    return;
                 }
-                socket.emit('joinedRoom', roomId);
-                console.log("Shabaraboonda", rooms[data.roomId])
-                io.emit('startGame', { roomId });
-                console.log(`Player joined room: ${roomId}`);
-            } else {
-                socket.emit('roomFull', roomId);
-            }
-        });
+                // if(results.current_game){
+                //     // - If yes then return error "You're already in a game."
+                //     // console.error("User already in a game.");
+                //     // return;
+                //     // I'm not even sure what is supposed to be done here
+                // }
 
-        socket.on('pieceMoved', data => {
-            if (data.gameOver) {
-                const player1Id = rooms[data.roomId].players[0]; // Assuming player IDs are their socket IDs
-                const player2Id = rooms[data.roomId].players[1];
-        
-                const query = 'INSERT INTO games (player1_id, player2_id, pgn) VALUES (?, ?, ?)';
-                db.query(query, [player1Id, player2Id, data.gamePGN], (err, results) => {
+                // - If not Create the game and return its id, 
+                // add the player as a player1, and the game id as current game
+                query = 'INSERT INTO games (player1_id, player2_id, pgn) VALUES (?, ?, ?)';
+                db.query(query, [user_id, null, null], (err, results) => {
                     if (err) {
                         console.error('Error saving game data:', err);
                         return;
                     }
-                    console.log('Game data saved with ID:', results.insertId);
+                    room_id = results.insertId
+                    console.log('Game data saved with ID:', room_id);
+                    socket.join(room_id);
+                    query = "UPDATE users SET current_game = ? WHERE id = ?;"
+                    db.query(query, [room_id, user_id], (err, results) => {
+                        if (err) {
+                            console.error('Error changing current game field on user:', err);
+                            return;
+                        }
+                        console.log(`User current game has been updated to: ${room_id}`, results.insertId);
+                    });                
+                    socket.emit('roomCreated', room_id);
+                    console.log(`Room created: ${room_id}`);
+
                 });
-        
-                // Optionally, you can emit an event to notify players that the game is over
-                io.to(data.roomId).emit('gameOver', { message: 'Game Over!' });
-            }
+            })
+            
+            
+
+
+            // socket.emit("roomExists", [roomId, rooms[roomId]]);
+
+        });
+
+        // Room joining
+        socket.on('joinRoom', (data) => {
+            var room_id = data.room_id;
+            var user_id = data.user_id;
+            var query;
+
+            console.log("Trying to join", room_id);
+            // Check if the room is vacant
+            query = "select player2_id from games where id = ?";
+            db.query(query, [room_id], (err, results) => {
+                console.log("The room you are trying to join is ", room_id)
+                if (err) {
+                    console.error('Error joining game:', err);
+                    return;
+                }
+                if(!results.current_game){
+                    socket.join(room_id);
+                    
+                    // Adding this game as the current game on the user record
+                    let query = "UPDATE users SET current_game = ? WHERE id = ?;"
+                    db.query(query, [user_id, room_id], (err, results) => {
+                        if (err) {
+                            console.error('Error changing current game field on user:', err);
+                            return;
+                        }
+                        console.log(`User current game has been updated to: ${room_id}`, results.insertId);
+                    });
+
+                    // Add the user id as the second user on the game record
+                    query = "UPDATE games SET player2_id = ? WHERE id = ?;"
+                    db.query(query, [user_id, room_id], (err, results) => {
+                        if (err) {
+                            console.error('Error changing current game field on user:', err);
+                            return;
+                        }
+                        console.log(`Player2_id of the game id ${room_id} has been updated to: ${user_id}`, results.insertId);
+                    });
+
+                    // Update started_at field to current datetime
+                    const updateQuery = "UPDATE games SET started_at = NOW() WHERE id = ?";
+                    db.query(updateQuery, [room_id], (err, updateResults) => {
+                        if (err) {
+                            console.error('Error updating game start time:', err);
+                            return;
+                        }
+                        console.log(`Game ${room_id} start time has been updated to the current datetime.`);
+                    });
+
+                    // Set the time of start for the game
+                    socket.emit('joinedRoom', room_id);
+                    io.emit('startGame', { room_id });
+                }
+                else{
+                    console.log("Game is full");
+                    return;
+                }
+            });
+        });
+
+        socket.on('pieceMoved', data => {
+            
+            const query = 'UPDATE games SET pgn = ? WHERE id = ?';
+            db.query(query, [data.gamePGN, Number(data.room_id)], (err, results) => {
+                if (err) {
+                    console.error('Error saving game data:', err);
+                    return;
+                }
+                console.log(`Game ${data.room_id} has been updated.`, results.insertId);
+            });
+    
+            // Optionally, you can emit an event to notify players that the game is over
+            // io.to(data.roomId).emit('gameOver', { message: 'Game Over!' });
             io.emit('gameState', data);
         });
 

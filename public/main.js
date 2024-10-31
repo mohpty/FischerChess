@@ -191,7 +191,7 @@ function onDrop (dropEvt) {
       // make a random legal move for black
       // window.setTimeout(makeRandomMove, 250)
       var data = {
-        'roomId': gameId,
+        'room_id': gameId,
         'move': move,
         'gameFen': game.fen(),
         'gamePGN': game.pgn(),
@@ -217,10 +217,13 @@ function onSnapEnd () {
 
 
 // Onlinneeeee
-socket.on('roomCreated', id => {
+socket.on('roomCreated', room_id => {
   clr = 0;
-  console.log(`A room has been created with id of ${id}`);
-  $('.matchMakingStatus').text(`Room Id: ${id}\nWaiting for player to join`);
+  console.log(`A room has been created with id of ${room_id}`);
+  alert(`A room has been created with id of ${room_id}`);
+  $('.matchMakingButtons').fadeOut(250, ()=>{
+    $('#matchMakingStatus').text(`Room Id: ${room_id}\nWaiting for player to join`);
+  });
 });
 
 socket.on('roomExists', data => {
@@ -236,11 +239,11 @@ socket.on('joinedRoom', data =>{
 })
 socket.on('startGame', data => {
   game = new Chess();
-  gameId = data.roomId;
+  gameId = data.room_id;
   board.start();
   $('#gameStatus').show();
-  $('.matchMakingButtons').remove();
-  $('#matchMakingStatus').remove();
+  $('.matchMakingButtons').fadeOut(250);
+  $('#matchMakingStatus').fadeOut(250);
   updatePGN();
   updateStatus();
 })
@@ -259,5 +262,5 @@ $('#createGame').click(()=>{
 
 $('#joinGame').click(()=>{
 
-  socket.emit('joinRoom', {roomId:$('#gameId').val(), user:parseInt(USER)});
+  socket.emit('joinRoom', {room_id:$('#gameId').val(), user_id:parseInt(USER)});
 })
