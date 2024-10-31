@@ -53,6 +53,22 @@ router.get('/signup', (req, res) => {
     // delete req.session.success;
 });
 
+router.get('/profile', (req, res) => {
+    if (!req.session.user){
+        req.flash('error_msg', 'You have to be logged in first')
+        res.redirect('/login');
+    }
+
+    res.render('profile', { 
+        success_msg: req.flash('success_msg'), 
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}});
+    
+    // if(req.session.error) delete req.session.error;
+    // delete req.session.success;
+});
+
+
 
 // Example route to set session data
 // router.get('/set-session', (req, res) => {
