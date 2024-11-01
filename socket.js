@@ -161,8 +161,20 @@ function setupSocket(server) {
                     return;
                 }
                 console.log(`Game ${data.room_id} has been updated.`, results.insertId);
+                if (data.gameOver){
+                    var gameResult = getGameResult(data.game_over, data.in_check, data.in_checkmate, data.in_draw, data.in_stalemate, 
+                                               data.in_threefold_repetition, data.insufficient_material, data.turn);
+                    db.query("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
+                        [data.gameFen, gameResult, data.room_id],(err, results) => {
+                            if (err){
+                                console.error("Couldn't set final position", err);
+                            }
+                            console.log("Game is over, and the game's final position and result has been set");
+                        }
+                    )   
+                }
             });
-    
+            
             // Optionally, you can emit an event to notify players that the game is over
             // io.to(data.roomId).emit('gameOver', { message: 'Game Over!' });
             io.emit('gameState', data);
@@ -174,6 +186,33 @@ function setupSocket(server) {
     });
 
     return io;
+}
+
+function getGameResult(game_over, in_check, in_checkmate, in_draw, in_stalemate, in_threefold_repetition, insufficient_material, turn){
+      if (in_checkmate && turn === 'w') {
+        return "0-1";
+      }
+      else if (in_checkmate && turn === 'b') {
+        return "1-0";
+      }
+      else if (in_stalemate && turn === 'w') {
+        // white is stalemated
+        return "½–½";
+      }
+      else if (in_stalemate && turn === 'b') {
+        // Black is stalemated
+        return "½–½";
+      }
+      else if (in_threefold_repetition) {
+        return "½–½";
+      }
+      else if (insufficient_material) {
+        return "½–½"
+      }
+      else if (in_draw){
+        // Fifty move rule
+        return "½–½";
+      }
 }
 
 module.exports = setupSocket;

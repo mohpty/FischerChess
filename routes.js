@@ -23,6 +23,37 @@ router.get('/play', (req, res) => {
     // delete res.session.success;
 });
 
+router.get('/profile', (req, res) => {
+    if (!req.session.user){
+        req.flash('error_msg', 'You have to be logged in first')
+        res.redirect('/login');
+    }
+  
+    res.render('profile', { 
+        success_msg: req.flash('success_msg'), 
+        error_msg: req.flash('error_msg'),
+        session: {user: req.session.user}});
+    
+    // if(req.session.error) delete req.session.error;
+    // delete req.session.success;
+  });
+  
+router.get('/profile', (req, res) => {
+  if (!req.session.user){
+      req.flash('error_msg', 'You have to be logged in first')
+      res.redirect('/login');
+  }
+
+  res.render('profile', { 
+      success_msg: req.flash('success_msg'), 
+      error_msg: req.flash('error_msg'),
+      session: {user: req.session.user}});
+  
+  // if(req.session.error) delete req.session.error;
+  // delete req.session.success;
+});
+  
+
 router.get('/login', (req, res) => {
     if (req.session.user){
         req.flash('error_msg', 'User is already logged in')
@@ -45,21 +76,6 @@ router.get('/signup', (req, res) => {
     }
 
     res.render('signup', { 
-        success_msg: req.flash('success_msg'), 
-        error_msg: req.flash('error_msg'),
-        session: {user: req.session.user}});
-    
-    // if(req.session.error) delete req.session.error;
-    // delete req.session.success;
-});
-
-router.get('/profile', (req, res) => {
-    if (!req.session.user){
-        req.flash('error_msg', 'You have to be logged in first')
-        res.redirect('/login');
-    }
-
-    res.render('profile', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
         session: {user: req.session.user}});

@@ -1,0 +1,43 @@
+<section>
+    <div class="container py-2">
+        <div class="row">
+            <div class="col-12 boards-container">
+                <div class='games-container'>
+                    <%for (let i = 0; i < games.length; i++){%>
+                        <div class="row game-card">
+                                <div class="col-8">
+                                    <h4>Player1: </h4>
+                                    <h4>Player2: </h4>
+                                    <h4>
+                                        <% switch (games[i].result) {
+                                            case '1-0' : %>
+                                                    White player won
+                                                    <% break;
+                                            
+                                            case '0-1' : %>
+                                                    Black player won
+                                                    <% break;
+                                            
+                                            case '½–½' : %>
+                                                    shlup
+                                                    <% break;
+                                            
+                                            } %>        
+                                    </h4>
+                                    
+                                </div>
+                                <div class="col-4">
+                                    <a href="#" class='gameLink'>
+                                        <div id="board<%=i%>" class="small-board" data-fen="<%=games[i].final_position%>"></div>
+                                    </a>
+                                </div>
+                        </div>
+                    <%}%>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type='module' src="/games.js"></script>
+<!-- <script>const USER = "<%=session.user%>"</script> -->
+<!-- // <script type='module' src="/main.js"></script> -->

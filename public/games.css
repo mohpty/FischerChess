@@ -1,0 +1,21 @@
+.small-board{
+    height:200px;
+    width:200px;
+}
+
+.games-container{
+    margin:auto;
+    text-align:center !important;
+}
+
+.gameLink{
+    margin-bottom:10px;
+    height:200px;
+    width:200px;
+    display:inline-block;
+}
+
+.game-card{
+    width:80%;
+    margin:auto;
+}

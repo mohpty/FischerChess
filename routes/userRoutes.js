@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const router = express.Router();
 
 // MySQL DB configuration (make sure to replace with your connection details)
-const mysqlConnection = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'localhost',
   user: 'root', 
   password: 'root',
@@ -17,7 +17,7 @@ router.post('/signup', async (req, res) => {
   const { username, password } = req.body;
 
   // Check if username already exists
-  mysqlConnection.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+  db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
     if (err){
       req.flash('error_msg', 'Database error');
       // res.locals.message = req.flash();
@@ -31,7 +31,7 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert new user into the database
-    mysqlConnection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
+    db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
       if (err){
         req.flash('error_msg', 'Database error');
         return res.status(500).redirect('signup')
@@ -47,7 +47,7 @@ router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   // Find user in the database
-  mysqlConnection.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+  db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
     if (err){
       req.flash('error_msg', 'Database error');
       return res.status(500).redirect('/login');
@@ -97,5 +97,30 @@ router.post('/logout', (req, res) => {
 router.get('login', (req,res)=>{
   res.redirect('/login');
 })
+
+router.get('/games', (req, res) => {
+  if (!req.session.user){
+      req.flash('error_msg', 'You have to be logged in first')
+      res.redirect('/login');
+  }
+  var gamesQuery = "select id, final_position, result from games where player1_id = ? OR player2_id = ?";
+  var games = {};
+  db.query(gamesQuery, [req.session.user, req.session.user], (err, results) => {
+    if(err){
+      console.error("Failed to retrieve user games.", err);
+      return;
+    }
+    games = results;
+    console.log(`Retrieving games for player with id ${req.session.user}`, games)
+    res.render('games', { 
+      games: games,
+      success_msg: req.flash('success_msg'), 
+      error_msg: req.flash('error_msg'),
+      session: {user: req.session.user}});
+  });
+  // if(req.session.error) delete req.session.error;
+  // delete req.session.success;
+});
+
 
 module.exports = router;

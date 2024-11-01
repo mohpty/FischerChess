@@ -196,7 +196,13 @@ function onDrop (dropEvt) {
         'gameFen': game.fen(),
         'gamePGN': game.pgn(),
         'turn': game.turn(),
-        'gameOver': game.game_over()
+        'gameOver': game.game_over(),
+        'in_check': game.in_check(),
+        'in_checkmate': game.in_checkmate(),
+        'in_draw': game.in_draw(),
+        'in_stalemate': game.in_stalemate(),
+        'in_threefold_repetition': game.in_threefold_repetition(),
+        'insufficient_material': game.insufficient_material()
       };
       socket.emit('pieceMoved', data);
     })
