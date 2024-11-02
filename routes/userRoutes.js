@@ -76,7 +76,7 @@ router.post('/login', (req, res) => {
     });
 
     // Set session data
-    req.session.user = user.id; // Store username in session
+    req.session.user = {id: user.id, name: user.username}; // Store username in session
     req.flash('success_msg', 'Logged in successfully');
     res.redirect('/play');
   });
@@ -105,13 +105,13 @@ router.get('/games', (req, res) => {
   }
   var gamesQuery = "select id, final_position, result from games where player1_id = ? OR player2_id = ?";
   var games = {};
-  db.query(gamesQuery, [req.session.user, req.session.user], (err, results) => {
+  db.query(gamesQuery, [req.session.user.id, req.session.user.id], (err, results) => {
     if(err){
       console.error("Failed to retrieve user games.", err);
       return;
     }
     games = results;
-    console.log(`Retrieving games for player with id ${req.session.user}`, games)
+    console.log(`Retrieving games for player with id ${req.session.user.id}`, games)
     res.render('games', { 
       games: games,
       success_msg: req.flash('success_msg'), 

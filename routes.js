@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/play', (req, res) => {
-    console.log(req.session.user)
+    console.log("Req.session.user => ",req.session.user)
     console.log(req.session)
     res.render('play', { 
         success_msg: req.flash('success_msg'), 
@@ -28,7 +28,7 @@ router.get('/profile', (req, res) => {
         req.flash('error_msg', 'You have to be logged in first')
         res.redirect('/login');
     }
-  
+    console.log(req.session.user.name)
     res.render('profile', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
