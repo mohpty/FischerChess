@@ -192,6 +192,7 @@ function onDrop (dropEvt) {
       // window.setTimeout(makeRandomMove, 250)
       var data = {
         'room_id': gameId,
+        'user_id': parseInt(USER),
         'move': move,
         'gameFen': game.fen(),
         'gamePGN': game.pgn(),

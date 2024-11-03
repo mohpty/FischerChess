@@ -98,57 +98,64 @@ function setupSocket(server) {
             var room_id = data.room_id;
             var user_id = data.user_id;
             var query;
-
+            // Check if the user has a game going on
             console.log("Trying to join", room_id);
             // Check if the room is vacant
-            query = "select player2_id from games where id = ?";
-            db.query(query, [room_id], (err, results) => {
-                console.log("The room you are trying to join is ", room_id)
+            query = "select current_game from users where id = ?";
+            db.query(query, [user_id], (err, results) => {
                 if (err) {
-                    console.error('Error joining game:', err);
+                    console.error('Error finding the player:', err);
                     return;
                 }
-                if(!results.current_game){
-                    socket.join(room_id);
-                    
-                    // Adding this game as the current game on the user record
-                    let query = "UPDATE users SET current_game = ? WHERE id = ?;"
-                    db.query(query, [user_id, room_id], (err, results) => {
-                        if (err) {
-                            console.error('Error changing current game field on user:', err);
-                            return;
-                        }
-                        console.log(`User current game has been updated to: ${room_id}`, results.insertId);
-                    });
-
-                    // Add the user id as the second user on the game record
-                    query = "UPDATE games SET player2_id = ? WHERE id = ?;"
-                    db.query(query, [user_id, room_id], (err, results) => {
-                        if (err) {
-                            console.error('Error changing current game field on user:', err);
-                            return;
-                        }
-                        console.log(`Player2_id of the game id ${room_id} has been updated to: ${user_id}`, results.insertId);
-                    });
-
-                    // Update started_at field to current datetime
-                    const updateQuery = "UPDATE games SET started_at = NOW() WHERE id = ?";
-                    db.query(updateQuery, [room_id], (err, updateResults) => {
-                        if (err) {
-                            console.error('Error updating game start time:', err);
-                            return;
-                        }
-                        console.log(`Game ${room_id} start time has been updated to the current datetime.`);
-                    });
-
-                    // Set the time of start for the game
-                    socket.emit('joinedRoom', room_id);
-                    io.emit('startGame', { room_id });
+                if(results[0].current_game){
+                    console.error("You are currently in a game.");
+                    return;
                 }
                 else{
-                    console.log("Game is full");
-                    return;
+                    let query = "select * from games where id = ?"; 
+                    db.query(query, [room_id], (err, results)=>{
+                        if(err){
+                            console.error("An error has occured retrieving the game", err);
+                        }
+                        if(results[0].started_at){
+                            console.error("Game has been started already.")
+                            return;
+                        }
+                        socket.join(room_id);
+
+                        // Adding this game as the current game on the user record
+                        query = "UPDATE users SET current_game = ? WHERE id = ?;"
+                        db.query(query, [user_id, room_id], (err, results) => {
+                            if (err) {
+                                console.error('Error changing current game field on user:', err);
+                                return;
+                            }
+                            console.log(`User current game has been updated to: ${room_id}`, results.insertId);
+                        });
+                        
+                        // Add the user id as the second user on the game record
+                        query = "UPDATE games SET player2_id = ?, started_at = NOW() WHERE id = ?;"
+                        db.query(query, [user_id, room_id], (err, results) => {
+                            if (err) {
+                                console.error('Error changing current game field on user:', err);
+                                return;
+                            }
+                            console.log(`Game ${room_id} start time has been updated to the current datetime.`);
+                            console.log(`Player2_id of the game id ${room_id} has been updated to: ${user_id}`, results.insertId);
+                        });
+                        
+                        
+                        // Set the time of start for the game
+                        socket.emit('joinedRoom', room_id);
+                        io.emit('startGame', { room_id });
+                    })                 
+                    
                 }
+                // }
+                // else{
+                //     console.log("Game is full");
+                //     return;
+                // }
             });
         });
 
@@ -162,8 +169,19 @@ function setupSocket(server) {
                 }
                 console.log(`Game ${data.room_id} has been updated.`, results.insertId);
                 if (data.gameOver){
-                    var gameResult = getGameResult(data.game_over, data.in_check, data.in_checkmate, data.in_draw, data.in_stalemate, 
-                                               data.in_threefold_repetition, data.insufficient_material, data.turn);
+                    var gameResult = getGameResult(data.game_over, data.in_check, data.in_checkmate, 
+                        data.in_draw, data.in_stalemate, 
+                        data.in_threefold_repetition,
+                        data.insufficient_material, data.turn);
+                    
+                    db.query("UPDATE users SET current_game = NULL WHERE id = ?", 
+                        [data.user_id],(err, results) => {
+                            if (err){
+                                console.error("Couldn't empty user current_game field", err);
+                            }
+                            console.log("User current game is null");
+                        }
+                    )
                     db.query("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
                         [data.gameFen, gameResult, data.room_id],(err, results) => {
                             if (err){

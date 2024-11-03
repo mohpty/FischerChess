@@ -3,6 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2');
 const router = express.Router();
+const sanitize = require('sanitize')();
 
 // MySQL DB configuration (make sure to replace with your connection details)
 const db = mysql.createConnection({
@@ -122,5 +123,27 @@ router.get('/games', (req, res) => {
   // delete req.session.success;
 });
 
+router.get('/games/:gameId', (req,res)=>{
+  var gameQuery = "select * from games where id = ?";
+  var game_id = sanitize.value(req.params.gameId, 'int');
+  var game;
+  db.query(gameQuery, [game_id], (err, results) => {
+    if(err){
+      console.error("Failed to retrieve game.", err);
+      req.flash('error_msg', 'Failed to retrieve game');
+      return res.status(500).redirect('games');;
+    }
+    game = results[0];  
+    res.render('gameReview', { 
+      game: game,
+      success_msg: req.flash('success_msg'), 
+      error_msg: req.flash('error_msg'),
+      session: {user: req.session.user}});
+  });
+  // if(req.session.error) delete req.session.error;
+  // delete req.session.
+  
+  // res.redirect('/login');
+});
 
 module.exports = router;
