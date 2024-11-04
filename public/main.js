@@ -3,26 +3,13 @@ var game = new Chess()
 var clr;
 var gameId;
 
-// $(document).click(()=>{
-//   $('#promotion').css('visibility', 'hidden', ()=>{
-    // $('.blackPromPiece').css('visibility', 'hidden');
-    // $('.whitePromPiece').css('visibility', 'hidden');
-//   });
-// })
-// socket.onAny((event, ...args) => {
-//   console.log(event, args);
-// });
-// the board object is "dumb":
-// - shows the current position from the game
-// - handles input events from users
 const boardConfig = {
   draggable: true,
   onDragStart,
   onTouchSquare,
   onDrop,
   onSnapEnd,
-  // position: game.fen(),
-  position: "rnbqkbnr/ppppppPp/8/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
+  position: game.fen(),
   touchMove: true
 }
 const board = Chessboard2('myBoard', boardConfig)
@@ -168,7 +155,7 @@ function promotionChoice(piece){
 }
 
 function onDrop (dropEvt) {
-
+  
   if (!promotionMove && (dropEvt.piece[1] === "P" && (dropEvt.target[1] === "1" || dropEvt.target[1] === "8"))){
     if (dropEvt.orientation == 'black') {
       $('.blackPromPiece').fadeIn('fast', () => {
@@ -244,7 +231,14 @@ function onDrop (dropEvt) {
 
 
 function setPromotionEvents(){
-  console.log("SetPromotionEvents")
+  // console.log("SetPromotionEvents")
+  $(document).click(()=>{
+    $('#promotion').css('visibility', 'hidden', ()=>{
+      $('.blackPromPiece').css('visibility', 'hidden');
+      $('.whitePromPiece').css('visibility', 'hidden');
+    });
+  })
+  
   $('#promotion-bQ, #promotion-wQ').on("click", ()=>{
     promotionChoice('q');
     $('#promotion').fadeOut('fast', ()=>{
@@ -308,7 +302,6 @@ socket.on('joinedRoom', data =>{
 })
 socket.on('startGame', data => {
   game = new Chess();
-  game.load("rnbqkbnr/ppppppPp/8/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1")
   gameId = data.room_id;
   board.start();
   setPromotionEvents();
