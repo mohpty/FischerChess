@@ -2,6 +2,13 @@ const socket = io('http://localhost:3000')
 var game = new Chess()
 var clr;
 var gameId;
+
+// $(document).click(()=>{
+//   $('#promotion').css('visibility', 'hidden', ()=>{
+    // $('.blackPromPiece').css('visibility', 'hidden');
+    // $('.whitePromPiece').css('visibility', 'hidden');
+//   });
+// })
 // socket.onAny((event, ...args) => {
 //   console.log(event, args);
 // });
@@ -14,7 +21,8 @@ const boardConfig = {
   onTouchSquare,
   onDrop,
   onSnapEnd,
-  position: game.fen(),
+  // position: game.fen(),
+  position: "rnbqkbnr/ppppppPp/8/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
   touchMove: true
 }
 const board = Chessboard2('myBoard', boardConfig)
@@ -25,7 +33,8 @@ $('#resetButton').click(()=>{
   updatePGN();
   updateStatus();
 })
-let pendingMove = null
+let pendingMove = null;
+let promotionMove = null;
 // There are 5 outcomes from this action:
 // - start a pending move
 // - clear a pending move
@@ -152,28 +161,45 @@ function onDragStart (dragStartEvt) {
 
 function isWhitePiece (piece) { return /^w/.test(piece) }
 
-// function makeRandomMove () {
-//   const possibleMoves = game.moves()
-
-//   // game over
-//   if (possibleMoves.length === 0) return
-
-//   const randomIdx = Math.floor(Math.random() * possibleMoves.length)
-//   game.move(possibleMoves[randomIdx])
-//   board.position(game.fen(), (_positionInfo) => {
-//     updateStatus()
-//     updatePGN()
-//   })
-// }
-
+function promotionChoice(piece){
+  console.log(`Promotion choice ${piece}`, promotionMove)
+  promotionMove['piece'] = piece;
+  onDrop(promotionMove)
+}
 
 function onDrop (dropEvt) {
-  // see if the move is legal
-  const move = game.move({
-    from: dropEvt.source,
-    to: dropEvt.target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  })
+
+  if (!promotionMove && (dropEvt.piece[1] === "P" && (dropEvt.target[1] === "1" || dropEvt.target[1] === "8"))){
+    if (dropEvt.orientation == 'black') {
+      $('.blackPromPiece').fadeIn('fast', () => {
+        $('#promotion').fadeIn('fast');
+      });
+    } else {
+      $('.whitePromPiece').fadeIn('fast', () => {
+        $('#promotion').fadeIn('fast');
+      });
+    }
+    promotionMove = dropEvt;
+    pendingMove = null;
+    return 'snapback';
+  }
+
+  var move;
+  if(promotionMove){
+    move = game.move({
+      from: promotionMove.source,
+      to: promotionMove.target,
+      promotion: promotionMove.piece // NOTE: always promote to a queen for example simplicity
+    })
+    promotionMove = null;
+  }
+  else{
+    // see if the move is legal
+    move = game.move({
+      from: dropEvt.source,
+      to: dropEvt.target
+    })
+  }
 
   // remove all Circles from the board
   board.clearCircles()
@@ -216,6 +242,42 @@ function onDrop (dropEvt) {
   }
 }
 
+
+function setPromotionEvents(){
+  console.log("SetPromotionEvents")
+  $('#promotion-bQ, #promotion-wQ').on("click", ()=>{
+    promotionChoice('q');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bR, #promotion-wR').on("click", ()=>{
+    promotionChoice('r');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bN, #promotion-wN').on("click", ()=>{
+    promotionChoice('n');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bB, #promotion-wB').on("click", ()=>{
+    promotionChoice('b');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+}
+
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
@@ -246,8 +308,10 @@ socket.on('joinedRoom', data =>{
 })
 socket.on('startGame', data => {
   game = new Chess();
+  game.load("rnbqkbnr/ppppppPp/8/8/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1")
   gameId = data.room_id;
   board.start();
+  setPromotionEvents();
   $('#gameStatus').show();
   $('.matchMakingButtons').fadeOut(250);
   $('#matchMakingStatus').fadeOut(250);

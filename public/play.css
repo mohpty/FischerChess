@@ -1,0 +1,23 @@
+#promotion{
+    width:70%;
+    margin:auto;
+    display:hidden;
+
+    transition: all 0.5s;
+}
+.promotion_piece{
+    width:50px;
+    margin:auto !important;
+}
+
+.promotion_piece:hover{
+    cursor: pointer;
+}
+
+.blackPromPiece{
+    display:none;
+}
+
+.whitePromPiece{
+    display:none;
+}
