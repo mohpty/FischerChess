@@ -1,5 +1,6 @@
 const socket = io('http://localhost:3000')
 var game = new Chess()
+var end;
 var clr;
 var gameId;
 
@@ -126,7 +127,7 @@ function updatePGN () {
 
 function onDragStart (dragStartEvt) {
   // do not pick up pieces if the game is over
-  if (game.game_over()) return false
+  if (game.game_over() || end) return false
 
   // only pick up pieces for same color
   if (!isWhitePiece(dragStartEvt.piece) != clr) return false
@@ -229,9 +230,22 @@ function onDrop (dropEvt) {
   }
 }
 
+socket.on('gameOver', data => {
+  socket.leave(gameId)
+  console.log("Do stuff with the interface after the game ends")
+})
 
-function setPromotionEvents(){
-  // console.log("SetPromotionEvents")
+function resign(){
+  var data = {
+    pgn: game.pgn(),
+    fen: game.fen(),
+    player_id: parseInt(USER),
+    game_id: parseInt(gameId)
+  }
+  socket.emit('resign', data);
+}
+function eventsSetup(){
+  // Promotion events
   $(document).click(()=>{
     $('#promotion').css('visibility', 'hidden', ()=>{
       $('.blackPromPiece').css('visibility', 'hidden');
@@ -270,6 +284,11 @@ function setPromotionEvents(){
       $('.whitePromPiece').fadeOut('fast')
     })
   })
+
+  // Resignation button
+  $('#resignationButton').on('click', ()=>{
+    resign();
+  })
 }
 
 // update the board position after the piece snap
@@ -304,7 +323,7 @@ socket.on('startGame', data => {
   game = new Chess();
   gameId = data.room_id;
   board.start();
-  setPromotionEvents();
+  eventsSetup();
   $('#gameStatus').show();
   $('.matchMakingButtons').fadeOut(250);
   $('#matchMakingStatus').fadeOut(250);
@@ -314,10 +333,30 @@ socket.on('startGame', data => {
 
 socket.on('gameState', data => {
   // alert('gameState');
+  if(data.resign){
+    end = true;
+    $("#resignationButton").hide(()=>{
+      if(data.resign != USER){
+        document.getElementById("#gameStatus").innerHTML = "Your opponent resigned, You win!";
+      }
+      else{
+        document.getElementById("#gameStatus").innerHTML = "You resigned the game";
+      }
+    })
+
+    socket.leave(data.gameId);
+  }
   game.move(data.move);
   board.position(data.gameFen);
   updatePGN();
   updateStatus();
+})
+
+socket.on("gameOver", data => {
+
+  console.log("$$$$$$ Game has been done, because of player resignation")
+  document.getElementById('gameStatus').innerHTML = `Player ${data.player_id} has resigned`;
+  alert(`Player ${data.player_id} has resigned`)
 })
 
 $('#createGame').click(()=>{

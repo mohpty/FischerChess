@@ -18,11 +18,6 @@ db.connect((err) => {
     console.log('Connected to the database.');
 });
 
-const rooms = {};
-const getRandomNumber = (min, max) => {
-    return Math.random() * (max - min) + min;
-};
-
 function setupSocket(server) {
     const io = new Server(server, {
         cors: {
@@ -125,7 +120,7 @@ function setupSocket(server) {
 
                         // Adding this game as the current game on the user record
                         query = "UPDATE users SET current_game = ? WHERE id = ?;"
-                        db.query(query, [user_id, room_id], (err, results) => {
+                        db.query(query, [room_id, user_id], (err, results) => {
                             if (err) {
                                 console.error('Error changing current game field on user:', err);
                                 return;
@@ -160,6 +155,17 @@ function setupSocket(server) {
         });
 
         socket.on('pieceMoved', data => {
+            db.query('select finished_at from games where id = ?', [Number(data.room_id)],(err, results) => {
+                if(err){
+                    console.error(err)
+                }
+
+                console.log("FINISHED AT",results.finished_at, " | ", results['finished_at'], " $ ", results)
+                if(results.finished_at){
+                    console.log("The game has already ended");
+                    return;
+                }
+            })
             
             const query = 'UPDATE games SET pgn = ? WHERE id = ?';
             db.query(query, [data.gamePGN, Number(data.room_id)], (err, results) => {
@@ -180,16 +186,17 @@ function setupSocket(server) {
                                 console.error("Couldn't empty user current_game field", err);
                             }
                             console.log("User current game is null");
+
+                            db.query("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
+                                [data.gameFen, gameResult, data.room_id],(err, results) => {
+                                    if (err){
+                                        console.error("Couldn't set final position", err);
+                                    }
+                                    console.log("Game is over, and the game's final position and result has been set");
+                                }
+                            )   
                         }
                     )
-                    db.query("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
-                        [data.gameFen, gameResult, data.room_id],(err, results) => {
-                            if (err){
-                                console.error("Couldn't set final position", err);
-                            }
-                            console.log("Game is over, and the game's final position and result has been set");
-                        }
-                    )   
                 }
             });
             
@@ -197,6 +204,59 @@ function setupSocket(server) {
             // io.to(data.roomId).emit('gameOver', { message: 'Game Over!' });
             io.emit('gameState', data);
         });
+
+        socket.on('resign', data => {
+            // Update pgn
+            var resignedPlayer = data.player_id;
+            var player1_id, player2_id;
+            let pgn = data.pgn;
+            let result;
+            // Check if the player has the black or white pieces
+            
+            let query = "select player1_id, player2_id from games where id = ?";
+            db.query(query, [data.game_id], (err, results)=>{
+                
+                if(err){
+                    console.error(err);
+                }
+                console.log("Results:", results[0])
+                // console.log("Data: ", data)
+                player1_id = results[0].player1_id;
+                player2_id = results[0].player2_id;
+                if(data.player_id === results[0].player1_id){
+                    pgn += " 0-1"
+                    result = "0-1"
+                }
+                else if(data.player_id === results[0].player2_id){
+                    pgn += " 1-0"
+                    result = "1-0"
+                }
+                else{
+                    console.log("Player_id isn't correct")
+                    return
+                }
+                let query = "UPDATE games SET pgn = ? ,final_position = ?, finished_at = NOW(), result = ? WHERE id = ?";
+                db.query(query, [pgn, data.fen, result, data.game_id], (err, results)=>{
+                    if (err){
+                        console.error(err)
+                    }
+                    console.log(`p1: ${player1_id}, p2: ${player2_id}`)
+                    // console.log(`Player${data.player_id} has resigned from game ${data.game_id}`)
+
+                    db.query("UPDATE users SET current_game = NULL WHERE id = ? OR id = ?", 
+                        [player1_id, player2_id], (err, results)=>{
+                            if(err){console.error(err)}
+                            console.log("Player1: ", player1_id, "Player2: ", player2_id)
+                            socket.to(data.game_id).emit("gameState", {gameId:data.room_id,resign:resignedPlayer})
+                            socket.leave(data.game_id);
+                            console.log(`Player with id ${data.player_id} is saying waaai\n and cannot complete game ${data.game_id}`);
+                        }
+                    )
+                });
+            });
+
+            
+        })
 
         socket.on('disconnect', () => {
             console.log(socket.id, " Disconnected");
