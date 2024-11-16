@@ -1,39 +1,233 @@
-<section>
-    <div class="container-fluid" style="background-color:whitesmoke">
-        <div class="container">
-            <div class="row my-4" style='padding-top:25px;'>
-                <div class="col-8">
-                    <div class="container py-2">
-                        <div class="chessBoard">
-                            <div id="myBoard" style="width: 600px; margin:auto"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 border">
-                    <div class="container">
-                        <div class="matchMakingButtons mx-auto text-center py-4">
-                            <button id='createGame' class='btn btn-primary'>Create game</button>
-                            <br>
-                            <input id='gameId' type="number" placeholder="Enter Room Id">
-                            <button id='joinGame' class='btn btn-success my-2'>Join game</button>
-                        </div>
-                        <div id='matchMakingStatus' class="container mx-auto text-center py-4">
-                        </div>
-                        
-                    </div>
-                    <div class="container">
-                        <p id="gameStatus" style='display:none;'></p>
-                        <!-- <h4>Game PGN:</h4> -->
-                        <div id="gamePGN" class='py-2' style="font-family: monospace"></div>
-                    </div>
-                </div>
-    
-    
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Room Name - Fisher Club|Online Chess</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+
+
+
+    <link rel="stylesheet" type="text/css" href="./css/fontello.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <header>
+      <div class="container-fluid">
+        <div class="row py-3 border-bottom">
+          <div class=" col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+            <div class="d-flex align-items-center my-3 my-sm-0 logo">
+              <a href="index.html">
+                <img src="./images/logo.png" alt="logo" class="img-fluid" >
+              </a>
             </div>
+          </div>
+
+
+          <!-- navbar -->
+          <div class="col-lg-4 d-flex justify-content-center navo">
+            <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+              <li class="nav-item active">
+                <a href="index.html" class="nav-link">Home</a>
+              </li>
+              <li class="nav-item active">
+                <a href="index.html" class="nav-link">Contact us</a>
+              </li>
+              <li class="nav-item active">
+                <a href="index.html" class="nav-link">About us</a>
+              </li>
+
+            </ul>
+          </div>
+            <!-- icons -->
+          <!-- <div class="col-sm-8 col-lg-2 d-flex gap-5 align-items-center justify-content-center justify-content-sm-end">
+            <ul class="d-flex justify-content-end list-unstyled m-0">
+              <li>
+                <a href="#" class="p-2 mx-1">
+                  <svg width="24" height="24"><use xlink:href="#user"></use></svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="p-2 mx-1">
+                  <svg width="24" height="24"><use xlink:href=""></use></svg>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
+                  <svg width="24" height="24"><use xlink:href=""></use></svg>
+                </a>
+              </li>
+            </ul>
+          </div> -->
+
+          <!-- Profile info on nav -->
+          <div class="col-sm-8 col-lg-2 d-flex gap-5 align-items-center justify-content-center justify-content-sm-end bato">
+            <div class="d-flex gap-3 justify-content-center">
+              <img src="./images/ged.png" alt="" class="rounded-pill" width="40px" height="40px"><span class="text-thin textname">Abdu Khalid</spain>
+              <i class="icon icon-logout"></i>
+            </div>
+          </div>
+
         </div>
+      </div>
+    </header>
+
+    <section style="background-color: black; background-size: cover;">
+
+
+      <div class="container">
+        <div class="row d-flex justify-content-center">
+          <!-- board play -->
+              <div class="col-md-4 col-lg-6">
+                <div id="parent">
+                  <div class="player-card player-2">
+                    <div class="rows row-1">
+                      <div class="icon"></div>
+                      <div class="text">
+                        <div class="headline"><h4 class="text-white">Player 1</h4></div>
+                        <div class="status">
+                          <span></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="rows row-2">
+                      <div class="timer">
+                        <span>00:00</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="chessboard" class="chessboard"></div>
+
+                  <div class="player-card player-1">
+                    <div class="rows row-2">
+                      <div class="timer">
+                        <span>00:00</span>
+                      </div>
+                    </div>
+                    <div class="rows row-1">
+                      <div class="icon"></div>
+                      <div class="text">
+                        <div class="headline"><h4 class="text-white">Player 2</h4></div>
+                        <div class="status">
+                          <span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- review -->
+              <div class="col-xl-4 col-md-12 mt-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col">
+                                <h4>12</h4>
+                                <p class="text-muted">Move</p>
+                                 <p class="text-muted">Room ID: 2108074408 <i class="icon icon-clone"></i></p>
+                            </div>
+                            <div class="col-auto">
+                                <label class="label label-danger">+20%</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+
+                                  <label for="" class="label-Sc">
+                                    <span>1.</span> <span>b2</span> <span>d1</span> <span>2.</span> <span>b2</span> <span>d1</span> <span>3.</span> <span>b2</span> <span>d1</span>
+                                    <span>2.</span> <span>b2</span> <span>d1</span>
+                                     <span>1.</span> <span>b2</span> <span>d1</span> <span>2.</span> <span>b2</span> <span>d1</span> <span>3.</span> <span>b2</span> <span>d1</span>
+                                    <span>2.</span> <span>b2</span> <span>d1</span>
+                                     <span>1.</span> <span>b2</span> <span>d1</span> <span>2.</span> <span>b2</span> <span>d1</span> <span>3.</span> <span>b2</span> <span>d1</span>
+                                    <span>2.</span> <span>b2</span> <span>d1</span>
+
+                                  </label>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card quater-card  gad">
+                  <div class="row">
+                    <div class="col-md-2 col-sm-2 b"> <button class="btn waves-effect waves-light btn-inverse"><i class="icon icon-to-start"></i></button></div>
+                    <div class="col-md-2 b"> <button class="btn  btn-inverse "><i class="icon icon-left-open-1"></i></button></div>
+                    <div class="col-md-2 b"> <button class="btn waves-effect waves-light btn-inverse "><i class="icon icon-right-open-1"></i></button></div>
+                    <div class="col-md-2 b"> <button class="btn waves-effect waves-light btn-inverse "><i class="icon icon-to-end"></i></button></div>
+                   </div>
+                </div>
+                <div class="card quater-card">
+                  <div class="row">
+                    <div class="col-md-2 m-1 a"> <button class="btn waves-effect waves-light btn-danger btn-1"><i class="icon icon-road"></i></button></div>
+                    <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1"><i class="icon icon-flag-empty"></i></button></div>
+                    <div class="col-md-2 m-1 a"> <button class="btn waves-effect waves-light btn-danger btn-1"><i class="icon icon-retweet"></i></button></div>
+                    <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1"><i class="icon icon-share"></i></button></div>
+                    <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1"><i class="icon icon-cog"></i></button></div>
+                   </div>
+                </div>
+
+                <!-- <div class="card quater-card">
+                  <div class="card-block row">
+                    <div class="col-4"> <button class="btn btn-primary icon icon-road"></button></div>
+                    <div class="col-4"> <button class="btn btn-primary icon icon-flag-empty"></button></div>
+                    <div class="col-4"> <button class="btn btn-primary icon icon-retweet"></button></div>
+                   </div>
+              </div> -->
+                <div class="card quater-card">
+                    <div class="card-block">
+                        <h6 class="text-muted m-b-15">Analysis</h6>
+
+                        <p class="text-muted">great <span>black</span></p>
+                        <h5>87</h5>
+                        <p class="text-muted">Black<span class="f-right">80%</span></p>
+                        <div class="progress"><div class="progress-bar bg-c-blue" style="width: 80%"></div></div>
+                        <h5 class="m-t-15">68</h5>
+                        <p class="text-muted">white<span class="f-right">50%</span></p>
+                        <div class="progress"><div class="progress-bar bg-c-green" style="width: 50%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+          <!-- End -->
+           <!-- right side -->
+
+        </div>
+      </div>
+      <div id="footer-bottom">
+        <div class="container-lg">
+          <div class="row">
+            <div class="col-md-6-r text-center copyright">
+              <p>© 2024 Fisher Club. All rights reserved.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
     </div>
-</section>
+    <script src="./js/jquery-1.11.0.min.js"></script>
+    <script src="./assets/javascript/javascript/Script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="./js/plugins.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/script-1.js"></script>
+    <script src="./js/script-2.js"></script>
 
-
-<script>const USER = "<%=session.user.id%>"</script>
-<script type='module' src="/main.js"></script>
+  </body>
+</html>
