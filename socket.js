@@ -37,7 +37,6 @@ function setupSocket(server) {
             or join another, but it should be modified so that you can join, but not create
             KEEP THAT IN MIND
             */
-            console.log(data);
             const user_id = data.user;
             var query;
             var room_id;
@@ -49,12 +48,6 @@ function setupSocket(server) {
                     console.error("Error Checking current game of the user, ", err);
                     return;
                 }
-                // if(results.current_game){
-                //     // - If yes then return error "You're already in a game."
-                //     // console.error("User already in a game.");
-                //     // return;
-                //     // I'm not even sure what is supposed to be done here
-                // }
 
                 // - If not Create the game and return its id, 
                 // add the player as a player1, and the game id as current game
@@ -65,7 +58,7 @@ function setupSocket(server) {
                         return;
                     }
                     room_id = results.insertId
-                    console.log('Game data saved with ID:', room_id);
+                    // console.log('Game data saved with ID:', room_id);
                     socket.join(room_id);
                     query = "UPDATE users SET current_game = ? WHERE id = ?;"
                     db.query(query, [room_id, user_id], (err, results) => {
@@ -81,9 +74,6 @@ function setupSocket(server) {
                 });
             })
             
-            
-
-
             // socket.emit("roomExists", [roomId, rooms[roomId]]);
 
         });
@@ -146,11 +136,6 @@ function setupSocket(server) {
                     })                 
                     
                 }
-                // }
-                // else{
-                //     console.log("Game is full");
-                //     return;
-                // }
             });
         });
 
@@ -219,8 +204,7 @@ function setupSocket(server) {
                 if(err){
                     console.error(err);
                 }
-                console.log("Results:", results[0])
-                // console.log("Data: ", data)
+                // console.log("Results:", results[0])
                 player1_id = results[0].player1_id;
                 player2_id = results[0].player2_id;
                 if(data.player_id === results[0].player1_id){
@@ -240,16 +224,14 @@ function setupSocket(server) {
                     if (err){
                         console.error(err)
                     }
-                    console.log(`p1: ${player1_id}, p2: ${player2_id}`)
-                    // console.log(`Player${data.player_id} has resigned from game ${data.game_id}`)
+                    // console.log(`p1: ${player1_id}, p2: ${player2_id}`)
 
                     db.query("UPDATE users SET current_game = NULL WHERE id = ? OR id = ?", 
                         [player1_id, player2_id], (err, results)=>{
                             if(err){console.error(err)}
-                            console.log("Player1: ", player1_id, "Player2: ", player2_id)
                             socket.to(data.game_id).emit("gameState", {gameId:data.room_id,resign:resignedPlayer})
                             socket.leave(data.game_id);
-                            console.log(`Player with id ${data.player_id} is saying waaai\n and cannot complete game ${data.game_id}`);
+                            // console.log(`Player with id ${data.player_id} is saying waaai\n and cannot complete game ${data.game_id}`);
                         }
                     )
                 });
