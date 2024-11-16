@@ -353,8 +353,13 @@ header{
 #highlite-Gr{
   color: green;
 }
+.sw :hover{
+  transition: all 1s ease-out;
+  transform: translate3d(0,-10px,0);
+  box-shadow: 0px 21px 44px rgba(0, 0, 0, 0.08);
+}
 .toprank-carousel{
-  transition: all 0.5s ease;
+
 }
 .toprank-carousel .category-item {
   background: #FFFFFF;
@@ -369,9 +374,7 @@ header{
 
 .toprank-carousel :hover {
   
-  transition: all 1s ease-out;
-  transform: translate3d(0,-10px,0);
-  box-shadow: 0px 21px 44px rgba(0, 0, 0, 0.08);
+  
 }
 .toprank-carousel .toprank-title {
   font-weight: 600;
@@ -712,9 +715,7 @@ margin-top: 75px;
   width: 300px;
 }
 @media (max-width: 991px) {
-  .btn{
-    width: 80px;
-  }
+  
 .left-side{
   margin-left: 30px;
   padding: 0px;
@@ -723,6 +724,9 @@ margin-top: 75px;
 }
 .label-Sc{
   width: 360px;
+}
+.a .btn-1{
+  width: 81px;
 }
 #parent{
   display: ;
@@ -742,9 +746,7 @@ margin-top: 75px;
   margin: 0px;
   padding: 0px;
 }
-/* 3407145
-متوكل حامد
-20  */
+
 .title{
   display: none;
 }
