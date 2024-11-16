@@ -2,6 +2,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const mysql = require('mysql2');
+const pgnToMoves = require('../src/misc');
 const router = express.Router();
 const sanitize = require('sanitize')();
 
@@ -112,7 +113,7 @@ router.get('/games', (req, res) => {
       return;
     }
     games = results;
-    console.log(`Retrieving games for player with id ${req.session.user.id}`, games)
+    console.log(`Retrieving games for player with id ${req.session.user.id}`)
     res.render('games', { 
       games: games,
       success_msg: req.flash('success_msg'), 
@@ -133,9 +134,10 @@ router.get('/games/:gameId', (req,res)=>{
       req.flash('error_msg', 'Failed to retrieve game');
       return res.status(500).redirect('games');;
     }
-    game = results[0];  
+    game = results[0];
     res.render('gameReview', { 
       game: game,
+      pgnMoves: pgnToMoves(game.pgn),
       success_msg: req.flash('success_msg'), 
       error_msg: req.flash('error_msg'),
       session: {user: req.session.user}});

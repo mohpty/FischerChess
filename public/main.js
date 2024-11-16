@@ -1,13 +1,9 @@
 const socket = io('http://localhost:3000')
 var game = new Chess()
+var end;
 var clr;
 var gameId;
-// socket.onAny((event, ...args) => {
-//   console.log(event, args);
-// });
-// the board object is "dumb":
-// - shows the current position from the game
-// - handles input events from users
+
 const boardConfig = {
   draggable: true,
   onDragStart,
@@ -25,7 +21,8 @@ $('#resetButton').click(()=>{
   updatePGN();
   updateStatus();
 })
-let pendingMove = null
+let pendingMove = null;
+let promotionMove = null;
 // There are 5 outcomes from this action:
 // - start a pending move
 // - clear a pending move
@@ -130,7 +127,7 @@ function updatePGN () {
 
 function onDragStart (dragStartEvt) {
   // do not pick up pieces if the game is over
-  if (game.game_over()) return false
+  if (game.game_over() || end) return false
 
   // only pick up pieces for same color
   if (!isWhitePiece(dragStartEvt.piece) != clr) return false
@@ -152,28 +149,45 @@ function onDragStart (dragStartEvt) {
 
 function isWhitePiece (piece) { return /^w/.test(piece) }
 
-// function makeRandomMove () {
-//   const possibleMoves = game.moves()
-
-//   // game over
-//   if (possibleMoves.length === 0) return
-
-//   const randomIdx = Math.floor(Math.random() * possibleMoves.length)
-//   game.move(possibleMoves[randomIdx])
-//   board.position(game.fen(), (_positionInfo) => {
-//     updateStatus()
-//     updatePGN()
-//   })
-// }
-
+function promotionChoice(piece){
+  console.log(`Promotion choice ${piece}`, promotionMove)
+  promotionMove['piece'] = piece;
+  onDrop(promotionMove)
+}
 
 function onDrop (dropEvt) {
-  // see if the move is legal
-  const move = game.move({
-    from: dropEvt.source,
-    to: dropEvt.target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  })
+  
+  if (!promotionMove && (dropEvt.piece[1] === "P" && (dropEvt.target[1] === "1" || dropEvt.target[1] === "8"))){
+    if (dropEvt.orientation == 'black') {
+      $('.blackPromPiece').fadeIn('fast', () => {
+        $('#promotion').fadeIn('fast');
+      });
+    } else {
+      $('.whitePromPiece').fadeIn('fast', () => {
+        $('#promotion').fadeIn('fast');
+      });
+    }
+    promotionMove = dropEvt;
+    pendingMove = null;
+    return 'snapback';
+  }
+
+  var move;
+  if(promotionMove){
+    move = game.move({
+      from: promotionMove.source,
+      to: promotionMove.target,
+      promotion: promotionMove.piece // NOTE: always promote to a queen for example simplicity
+    })
+    promotionMove = null;
+  }
+  else{
+    // see if the move is legal
+    move = game.move({
+      from: dropEvt.source,
+      to: dropEvt.target
+    })
+  }
 
   // remove all Circles from the board
   board.clearCircles()
@@ -216,6 +230,67 @@ function onDrop (dropEvt) {
   }
 }
 
+socket.on('gameOver', data => {
+  socket.leave(gameId)
+  console.log("Do stuff with the interface after the game ends")
+})
+
+function resign(){
+  var data = {
+    pgn: game.pgn(),
+    fen: game.fen(),
+    player_id: parseInt(USER),
+    game_id: parseInt(gameId)
+  }
+  socket.emit('resign', data);
+}
+function eventsSetup(){
+  // Promotion events
+  $(document).click(()=>{
+    $('#promotion').css('visibility', 'hidden', ()=>{
+      $('.blackPromPiece').css('visibility', 'hidden');
+      $('.whitePromPiece').css('visibility', 'hidden');
+    });
+  })
+  
+  $('#promotion-bQ, #promotion-wQ').on("click", ()=>{
+    promotionChoice('q');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bR, #promotion-wR').on("click", ()=>{
+    promotionChoice('r');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bN, #promotion-wN').on("click", ()=>{
+    promotionChoice('n');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+  
+  $('#promotion-bB, #promotion-wB').on("click", ()=>{
+    promotionChoice('b');
+    $('#promotion').fadeOut('fast', ()=>{
+      $('.blackPromPiece').fadeOut('fast')
+      $('.whitePromPiece').fadeOut('fast')
+    })
+  })
+
+  // Resignation button
+  $('#resignationButton').on('click', ()=>{
+    resign();
+  })
+}
+
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
@@ -248,6 +323,7 @@ socket.on('startGame', data => {
   game = new Chess();
   gameId = data.room_id;
   board.start();
+  eventsSetup();
   $('#gameStatus').show();
   $('.matchMakingButtons').fadeOut(250);
   $('#matchMakingStatus').fadeOut(250);
@@ -257,10 +333,30 @@ socket.on('startGame', data => {
 
 socket.on('gameState', data => {
   // alert('gameState');
+  if(data.resign){
+    end = true;
+    $("#resignationButton").hide(()=>{
+      if(data.resign != USER){
+        document.getElementById("#gameStatus").innerHTML = "Your opponent resigned, You win!";
+      }
+      else{
+        document.getElementById("#gameStatus").innerHTML = "You resigned the game";
+      }
+    })
+
+    socket.leave(data.gameId);
+  }
   game.move(data.move);
   board.position(data.gameFen);
   updatePGN();
   updateStatus();
+})
+
+socket.on("gameOver", data => {
+
+  console.log("$$$$$$ Game has been done, because of player resignation")
+  document.getElementById('gameStatus').innerHTML = `Player ${data.player_id} has resigned`;
+  alert(`Player ${data.player_id} has resigned`)
 })
 
 $('#createGame').click(()=>{

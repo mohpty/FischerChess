@@ -24,3 +24,11 @@
     width:300px;
     height:300px;
 }
+
+.moveCard{
+    cursor:pointer;
+}
+
+.boardArrow{
+    width:50px;
+}

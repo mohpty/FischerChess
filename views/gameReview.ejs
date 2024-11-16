@@ -2,7 +2,41 @@
     <div class="container">
         <div class="row">
             <div class="col-12 ">
-                <div id="game_review_board" style="width: 400px" data-fen="<%=game.final_position%>" data-pgn="<%=game.pgn%>"></div>
+                <div class="row">
+                    <div class="col-8">
+                        <div id="game_review_board" style="width: 400px" data-fen="<%=game.final_position%>" data-pgn="<%=game.pgn%>"></div>
+                        <div class="row mx-auto text-center">
+                          <div id='firstPosition' class='btn btn-primary boardArrow'>|<</div>
+                          <div id='prevMove' class='btn btn-warning boardArrow'><</div>
+                          <div id='nextMove' class='btn btn-warning boardArrow'>></div>
+                          <div id='lastPosition' class='btn btn-primary boardArrow'>>|</div>
+                        </div>
+                      </div>
+                    <div class="col-4">
+
+                        <div class="container mt-4">
+                            <h3 class="mb-3">Game Review</h3>
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>Move #</th>
+                                  <th>White</th>
+                                  <th>Black</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% pgnMoves.forEach(move => { %>
+                                  <tr>
+                                    <td><%= move[0] %></td>
+                                    <td class="moveCard" data-move="<%=move[0]%>w"><%= move[1] %></td>
+                                    <td class="moveCard" data-move="<%=move[0]%>b"><%= move[2] %></td>
+                                  </tr>
+                                <% }) %>
+                              </tbody>
+                            </table>
+                            <p class="lead"><%=game.result%></p>
+                          </div>
+                </div>
             </div>
         </div>
     </div>

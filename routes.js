@@ -5,7 +5,7 @@ const router = express.Router();
 // Define your routes here
 router.get('/', (req, res) => {
     // console.log(req.session)
-    res.render('index', { 
+    res.render('index',{ 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
         session: {user: req.session.user}});
@@ -13,8 +13,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/play', (req, res) => {
-    console.log("Req.session.user => ",req.session.user)
-    console.log(req.session)
+    if (!req.session.user){
+        req.flash('error_msg', 'You have to be logged in first')
+        res.redirect('/login');
+        return;
+    }
     res.render('play', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
@@ -27,8 +30,8 @@ router.get('/profile', (req, res) => {
     if (!req.session.user){
         req.flash('error_msg', 'You have to be logged in first')
         res.redirect('/login');
+        return;
     }
-    console.log(req.session.user.name)
     res.render('profile', { 
         success_msg: req.flash('success_msg'), 
         error_msg: req.flash('error_msg'),
@@ -42,6 +45,7 @@ router.get('/profile', (req, res) => {
   if (!req.session.user){
       req.flash('error_msg', 'You have to be logged in first')
       res.redirect('/login');
+      return;
   }
 
   res.render('profile', { 
@@ -58,6 +62,7 @@ router.get('/login', (req, res) => {
     if (req.session.user){
         req.flash('error_msg', 'User is already logged in')
         res.redirect('/');
+        return;
     }
     res.render('login', { 
         success_msg: req.flash('success_msg'), 
@@ -73,6 +78,7 @@ router.get('/signup', (req, res) => {
     if (req.session.user){
         req.flash('error_msg', 'User is already logged in')
         res.redirect('/');
+        return;
     }
 
     res.render('signup', { 
