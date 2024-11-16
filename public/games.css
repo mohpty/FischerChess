@@ -28,3 +28,7 @@
 .moveCard{
     cursor:pointer;
 }
+
+.boardArrow{
+    width:50px;
+}
