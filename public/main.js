@@ -325,6 +325,7 @@ socket.on('startGame', data => {
   board.start();
   eventsSetup();
   $('#gameStatus').show();
+  $("#gameControls").show();
   $('.matchMakingButtons').fadeOut(250);
   $('#matchMakingStatus').fadeOut(250);
   updatePGN();
@@ -333,6 +334,7 @@ socket.on('startGame', data => {
 
 socket.on('gameState', data => {
   // alert('gameState');
+  console.log("Got a new one!!")
   if(data.resign){
     end = true;
     $("#resignationButton").hide(()=>{

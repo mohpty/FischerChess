@@ -32,3 +32,15 @@
 .boardArrow{
     width:50px;
 }
+
+#gameControls{
+    display:none;
+}
+
+.highlightedMove{
+    background-color: #f17b7b; /* Light yellow background */
+    border: 2px solid #ffa500; /* Orange border */
+    color: #000; /* Black text color for better contrast */
+    font-weight: bold; /* Make the text bold */
+    transition: all 0.1s ease; /* Smooth transition for hover effects */
+}
