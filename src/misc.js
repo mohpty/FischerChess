@@ -7,6 +7,7 @@ function pgnToMoves(pgn){
     var modMoves = []
     var move = [];
     var output = [];
+
     for(let i = 0; i < moves.length; i++){
         if(moves[i] === "{"){
             comment = true;
@@ -32,7 +33,13 @@ function pgnToMoves(pgn){
         move.push(modMoves[i])
     }
     output.push(move)
+    
+    // Remove all the dots from the numbering
+    for(let i = 0; i < output.length;i++){
+        output[i][0] = Number(output[i][0].slice(0,output[i][0].length - 1))
+    }
     return output;
 }
+
 
 module.exports = pgnToMoves;

@@ -25,16 +25,16 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <% pgnMoves.forEach(move => { %>
+                                <% for(let i = 0 ; i < pgnMoves.length; i++){ %>
                                   <tr>
-                                    <td><%= move[0] %></td>
-                                    <td class="moveCard" data-move="<%=move[0]%>w"><%= move[1] %></td>
-                                    <%if(move[2]){%>
-                                    <td class="moveCard" data-move="<%=move[0]%>b"><%= move[2] %></td>
+                                    <td><%= pgnMoves[i][0] %>.</td>
+                                    <td class="moveCard" data-move="<%=pgnMoves[i][0]%>"><%= pgnMoves[i][1] %></td>
+                                    <%if(pgnMoves[i][2]){%>
+                                    <td class="moveCard" data-move="<%=pgnMoves[i][0] * -1%>"><%= pgnMoves[i][2] %></td>
                                     <%}%>
 
                                   </tr>
-                                <% }) %>
+                                <% } %>
                               </tbody>
                             </table>
                             <p class="lead"><%=game.result%></p>
