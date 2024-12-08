@@ -1,45 +1,66 @@
-<div class="container"></div>
-    <div class="row">
-      <div class="col-lg-10 col-xl-9 mx-auto">
-        <div class="card flex-row my-5 border-0 shadow rounded-3 overflow-hidden">
-          <div class="card-img-left d-none d-md-flex">
-            <!-- Background image for card set in CSS! -->
-          </div>
-          <div class="card-body p-4 p-sm-5">
-            <h5 class="card-title text-center mb-5 fw-light fs-5">Signup</h5>
-            <form action="/user/signup" method="POST">
-
-              <div class="form-floating mb-3">
-                <input name='username' type="text" class="form-control" id="floatingInputUsername" placeholder="myusername" required autofocus>
-                <label for="floatingInputUsername">Username</label>
-              </div>
-
-              <div class="form-floating mb-3">
-                <input name='email' type="email" class="form-control" id="floatingInputEmail" placeholder="name@example.com">
-                <label for="floatingInputEmail">Email address</label>
-              </div>
-
-              <hr>
-
-              <div class="form-floating mb-3">
-                <input name='password' type="password" class="form-control" id="floatingPassword" placeholder="Password">
-                <label for="floatingPassword">Password</label>
-              </div>
-
-              <div class="form-floating mb-3">
-                <input name='passwordconfirm' type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Confirm Password">
-                <label for="floatingPasswordConfirm">Confirm Password</label>
-              </div>
-
-              <div class="d-grid mb-2">
-                <button class="btn btn-lg btn-primary btn-login fw-bold text-uppercase" type="submit">Register</button>
-              </div>
-
-              <a class="d-block text-center mt-2 small" href="/login">Have an account? Sign In</a>
-
-            </form>
-          </div>
+<div class="container-fluid ps-md-0">
+  <div class="row g-0">
+    <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+    <div class="col-md-8 col-lg-6">
+      <div class="login d-flex align-items-center py-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-9 col-lg-8 mx-auto">
+              <div class="">
+                <div class="" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <div class="form-title text-center">
+                        <h4>Sign Up</h4>
+                      </div>
+                      <div class="d-flex flex-column text-center">
+                        <% if(success_msg.length > 0) { %>
+                          <div class="alert alert-success">
+                            <%= success_msg %>
+                          </div>
+                          <% } %>
+                          
+                          <% if(error_msg.length > 0) { %>
+                            <div class="alert alert-danger">
+                              <%= error_msg %>
+                            </div>
+                            <% } %>
+                        <form action="/user/signup" method="POST">
+                          <div class="form-group">
+                            <input type="text" class="form-control" id="name" name='username' placeholder="Username" required>
+                          </div>
+                          <div class="form-group">
+                            <input type="email" class="form-control" id="email1" name="email" placeholder="Email address" required>
+                          </div>
+                          <div class="form-group">
+                            <input type="password" class="form-control" id="password1" name='password' placeholder="Password" required>
+                          </div>
+                          <input type="submit" class="btn btn-info btn-block btn-danger" id="bt">
+                        </form>
+        
+                        <div class="text-center text-muted delimiter">or use a social network</div>
+                        <div class="d-flex justify-content-center social-buttons">
+                          <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                          </button>
+                          <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                          </button>
+                          <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Linkedin">
+                            <i class="fab fa-linkedin"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                      <div class="signup-section">i have an Account <a href="/login" class="text-info"> Login</a>.</div>
+                    </div>
+                </div>
+              </div>        
+            </div>
         </div>
       </div>
     </div>
   </div>
+</div>

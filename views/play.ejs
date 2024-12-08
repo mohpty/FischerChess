@@ -1,68 +1,127 @@
-<section>
-    <div class="container-fluid" style="background-color:whitesmoke">
-        <div class="container">
-            <div class="row my-4" style='padding-top:25px;'>
-                <div class="col-8">
-                    <div class="container py-2">
-                        <div class="chessBoard">
-                            <div id=''>
-                                <div id="promotion" class="row">
-                                    <div class="col-3 mx-auto">
-                                        <div class="mx-auto text-center">
-                                            <img id="promotion-bB" class='promotion_piece blackPromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgZmlsbD0iIzAwMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik05IDM2YzMuMzktLjk3IDEwLjExLjQzIDEzLjUtMiAzLjM5IDIuNDMgMTAuMTEgMS4wMyAxMy41IDIgMCAwIDEuNjUuNTQgMyAyLS42OC45Ny0xLjY1Ljk5LTMgLjUtMy4zOS0uOTctMTAuMTEuNDYtMTMuNS0xLTMuMzkgMS40Ni0xMC4xMS4wMy0xMy41IDEtMS4zNS40OS0yLjMyLjQ3LTMtLjUgMS4zNS0xLjQ2IDMtMiAzLTJ6bTYtNGMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2U9IiNmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48L3N2Zz4=" alt="black bishop">
-                                            <img id="promotion-wB" class='promotion_piece whitePromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgZmlsbD0iI2ZmZiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik05IDM2YzMuMzktLjk3IDEwLjExLjQzIDEzLjUtMiAzLjM5IDIuNDMgMTAuMTEgMS4wMyAxMy41IDIgMCAwIDEuNjUuNTQgMyAyLS42OC45Ny0xLjY1Ljk5LTMgLjUtMy4zOS0uOTctMTAuMTEuNDYtMTMuNS0xLTMuMzkgMS40Ni0xMC4xMS4wMy0xMy41IDEtMS4zNS40OS0yLjMyLjQ3LTMtLjUgMS4zNS0xLjQ2IDMtMiAzLTJ6bTYtNGMyLjUgMi41IDEyLjUgMi41IDE1IDAgLjUtMS41IDAtMiAwLTIgMC0yLjUtMi41LTQtMi41LTQgNS41LTEuNSA2LTExLjUtNS0xNS41LTExIDQtMTAuNSAxNC01IDE1LjUgMCAwLTIuNSAxLjUtMi41IDQgMCAwLS41LjUgMCAyeiIvPjxwYXRoIGQ9Ik0yNSA4YTIuNSAyLjUgMCAxIDEtNSAwIDIuNSAyLjUgMCAxIDEgNSAweiIvPjwvZz48cGF0aCBkPSJNMTcuNSAyNmgxME0xNSAzMGgxNW0tNy41LTE0LjV2NU0yMCAxOGg1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ii8+PC9zdmc+" alt="white bishop">
-                                        </div>
-                                    </div>
-                                    <div class="col-3 mx-auto">
-                                        <div class="mx-auto text-center">
-                                            <img id='promotion-bR' class='promotion_piece blackPromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3ptMy41LTdsMS41LTIuNWgxN2wxLjUgMi41aC0yMHoiLz48cGF0aCBkPSJNMTIgMzZ2LTRoMjF2NEgxMnoiLz48L2c+PHBhdGggZD0iTTE0IDI5LjV2LTEzaDE3djEzSDE0eiIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48ZyBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTQgMTYuNUwxMSAxNGgyM2wtMyAyLjVIMTR6IiBzdHJva2Utd2lkdGg9IjEuNSIvPjxwYXRoIGQ9Ik0xMSAxNFY5aDR2Mmg1VjloNXYyaDVWOWg0djVIMTF6IiBzdHJva2Utd2lkdGg9IjEuNSIvPjwvZz48cGF0aCBkPSJNMTIgMzUuNWgyMW0tMjAtNGgxOW0tMTgtMmgxN20tMTctMTNoMTdNMTEgMTRoMjMiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=" alt="black rook">
-                                            <img id='promotion-wR' class='promotion_piece whitePromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiPjxwYXRoIGQ9Ik05IDM5aDI3di0zSDl2M3oiLz48cGF0aCBkPSJNMTIgMzZ2LTRoMjF2NEgxMnoiLz48cGF0aCBkPSJNMTEgMTRWOWg0djJoNVY5aDV2Mmg1VjloNHY1IiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjxwYXRoIGQ9Ik0zNCAxNGwtMyAzSDE0bC0zLTMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvZz48cGF0aCBkPSJNMzEgMTd2MTIuNUgxNFYxNyIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS13aWR0aD0iMS41Ii8+PGcgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIj48cGF0aCBkPSJNMzEgMjkuNWwxLjUgMi41aC0yMGwxLjUtMi41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIvPjxwYXRoIGQ9Ik0xMSAxNGgyMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLXdpZHRoPSIxLjUiLz48L2c+PC9zdmc+" alt="white rook">
-                                        </div>
-                                    </div>
-                                    <div class="col-3 mx-auto">
-                                        <div class="mx-auto text-center">
-                                            <img id='promotion-bN' class='promotion_piece blackPromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgZmlsbD0iIzAwMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTIyIDEwYzEwLjUgMSAxNi41IDggMTYgMjlIMTVjMC05IDEwLTYuNSA4LTIxIi8+PHBhdGggZD0iTTI0IDE4Yy4zOCAyLjkxLTUuNTUgNy4zNy04IDktMyAyLTIuODIgNC4zNC01IDQtMS4wNDItLjk0IDEuNDEtMy4wNCAwLTMtMSAwIC4xOSAxLjIzLTEgMi0xIDAtNC4wMDMgMS00LTQgMC0yIDYtMTIgNi0xMnMxLjg5LTEuOSAyLTMuNWMtLjczLS45OTQtLjUtMi0uNS0zIDEtMSAzIDIuNSAzIDIuNWgycy43OC0xLjk5MiAyLjUtM2MxIDAgMSAzIDEgMyIvPjwvZz48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVjLS40MTQuNzE3LS45NDQgMS4xODctMS4xODMgMS4wNDlzLS4wOTctLjgzMi4zMTctMS41NDkuOTQ0LTEuMTg3IDEuMTgzLTEuMDQ5LjA5Ny44MzItLjMxNyAxLjU0OXoiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2U9IiNmZmYiLz48cGF0aCBkPSJNMjQuNTUgMTAuNGwtLjQ1IDEuNDUuNS4xNWMzLjE1IDEgNS42NSAyLjQ5IDcuOSA2Ljc1UzM1Ljc1IDI5LjA2IDM1LjI1IDM5bC0uMDUuNWgyLjI1bC4wNS0uNWMuNS0xMC4wNi0uODgtMTYuODUtMy4yNS0yMS4zNHMtNS43OS02LjY0LTkuMTktNy4xNmwtLjUxLS4xeiIgc3Ryb2tlPSJub25lIi8+PC9nPjwvc3ZnPg==" alt="black knight">
-                                            <img id='promotion-wN' class='promotion_piece whitePromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHhtbG5zOnY9Imh0dHBzOi8vdmVjdGEuaW8vbmFubyI+PGcgZmlsbD0iI2ZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSI+PHBhdGggZD0iTTIyIDEwYzEwLjUgMSAxNi41IDggMTYgMjlIMTVjMC05IDEwLTYuNSA4LTIxIi8+PHBhdGggZD0iTTI0IDE4Yy4zOCAyLjkxLTUuNTUgNy4zNy04IDktMyAyLTIuODIgNC4zNC01IDQtMS4wNDItLjk0IDEuNDEtMy4wNCAwLTMtMSAwIC4xOSAxLjIzLTEgMi0xIDAtNC4wMDMgMS00LTQgMC0yIDYtMTIgNi0xMnMxLjg5LTEuOSAyLTMuNWMtLjczLS45OTQtLjUtMi0uNS0zIDEtMSAzIDIuNSAzIDIuNWgycy43OC0xLjk5MiAyLjUtM2MxIDAgMSAzIDEgMyIvPjwvZz48cGF0aCBkPSJNOS41IDI1LjVhLjUuNSAwIDEgMS0xIDAgLjUuNSAwIDEgMSAxIDB6bTUuNDMzLTkuNzVjLS40MTQuNzE3LS45NDQgMS4xODctMS4xODMgMS4wNDlzLS4wOTctLjgzMi4zMTctMS41NDkuOTQ0LTEuMTg3IDEuMTgzLTEuMDQ5LjA5Ny44MzItLjMxNyAxLjU0OXoiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ii8+PC9zdmc+" alt="white knight">
-                                        </div>
-                                    </div>
-                                    <div class="col-3 mx-auto">
-                                        <div class="mx-auto text-center">
-                                            <img id='promotion-bQ' class='promotion_piece blackPromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgc3Ryb2tlPSIjMDAwIiB4bWxuczp2PSJodHRwczovL3ZlY3RhLmlvL25hbm8iPjxnIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ij48cGF0aCBkPSJNOSAyNmM4LjUtMS41IDIxLTEuNSAyNyAwbDIuNS0xMi41TDMxIDI1bC0uMy0xNC4xLTUuMiAxMy42LTMtMTQuNS0zIDE0LjUtNS4yLTEzLjZMMTQgMjUgNi41IDEzLjUgOSAyNnoiLz48cGF0aCBkPSJNOSAyNmMwIDIgMS41IDIgMi41IDQgMSAxLjUgMSAxIC41IDMuNS0xLjUgMS0xIDIuNS0xIDIuNS0xLjUgMS41IDAgMi41IDAgMi41IDYuNSAxIDE2LjUgMSAyMyAwIDAgMCAxLjUtMSAwLTIuNSAwIDAgLjUtMS41LTEtMi41LS41LTIuNS0uNS0yIC41LTMuNSAxLTIgMi41LTIgMi41LTQtOC41LTEuNS0xOC41LTEuNS0yNyAweiIvPjxwYXRoIGQ9Ik0xMS41IDMwYzMuNS0xIDE4LjUtMSAyMiAwTTEyIDMzLjVjNi0xIDE1LTEgMjEgMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGNpcmNsZSBjeD0iNiIgY3k9IjEyIiByPSIyIi8+PGNpcmNsZSBjeD0iMTQiIGN5PSI5IiByPSIyIi8+PGNpcmNsZSBjeD0iMjIuNSIgY3k9IjgiIHI9IjIiLz48Y2lyY2xlIGN4PSIzMSIgY3k9IjkiIHI9IjIiLz48Y2lyY2xlIGN4PSIzOSIgY3k9IjEyIiByPSIyIi8+PHBhdGggZD0iTTExIDM4LjVhMzUgMzUgMSAwIDAgMjMgMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIGZpbGw9Im5vbmUiLz48L2c+PHBhdGggZD0iTTExIDI5YTM1IDM1IDEgMCAxIDIzIDBtLTIxLjUgMi41aDIwbS0yMSAzYTM1IDM1IDEgMCAwIDIyIDBtLTIzIDNhMzUgMzUgMSAwIDAgMjQgMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41Ii8+PC9zdmc+" alt="">
-                                            <img id='promotion-wQ' class='promotion_piece whitePromPiece' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48cGF0aCBkPSJNOSAyNmM4LjUtMS41IDIxLTEuNSAyNyAwbDIuNS0xMi41TDMxIDI1bC0uMy0xNC4xLTUuMiAxMy42LTMtMTQuNS0zIDE0LjUtNS4yLTEzLjZMMTQgMjUgNi41IDEzLjUgOSAyNnoiLz48cGF0aCBkPSJNOSAyNmMwIDIgMS41IDIgMi41IDQgMSAxLjUgMSAxIC41IDMuNS0xLjUgMS0xIDIuNS0xIDIuNS0xLjUgMS41IDAgMi41IDAgMi41IDYuNSAxIDE2LjUgMSAyMyAwIDAgMCAxLjUtMSAwLTIuNSAwIDAgLjUtMS41LTEtMi41LS41LTIuNS0uNS0yIC41LTMuNSAxLTIgMi41LTIgMi41LTQtOC41LTEuNS0xOC41LTEuNS0yNyAweiIvPjxwYXRoIGQ9Ik0xMS41IDMwYzMuNS0xIDE4LjUtMSAyMiAwTTEyIDMzLjVjNi0xIDE1LTEgMjEgMCIgZmlsbD0ibm9uZSIvPjxjaXJjbGUgY3g9IjYiIGN5PSIxMiIgcj0iMiIvPjxjaXJjbGUgY3g9IjE0IiBjeT0iOSIgcj0iMiIvPjxjaXJjbGUgY3g9IjIyLjUiIGN5PSI4IiByPSIyIi8+PGNpcmNsZSBjeD0iMzEiIGN5PSI5IiByPSIyIi8+PGNpcmNsZSBjeD0iMzkiIGN5PSIxMiIgcj0iMiIvPjwvc3ZnPg==" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="myBoard" style="width: 600px; margin:auto"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 border">
-                    <div class="container">
-                        <div class="matchMakingButtons mx-auto text-center py-4">
-                            <button id='createGame' class='btn btn-primary'>Create game</button>
-                            <br>
-                            <input id='gameId' type="number" placeholder="Enter Room Id">
-                            <button id='joinGame' class='btn btn-success my-2'>Join game</button>
-                        </div>
-                        <div id='matchMakingStatus' class="container mx-auto text-center py-4">
-                        </div>
-                        
-                    </div>
-                    <div class="container">
-                        <div id='resignationButton' class="btn btn-danger my-2">Resign</div>
-                        <p id="gameStatus" style='display:none;'></p>
-                        <!-- <h4>Game PGN:</h4> -->
-                        <div id="gamePGN" class='py-2' style="font-family: monospace"></div>
-                    </div>
-                </div>
-    
-    
-            </div>
-        </div>
-    </div>
-</section>
+<section style="background-color: black; background-size: cover;">
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="matchMakingButtons mx-auto text-center py-4">
+        <button id='createGame' class='btn btn-primary'>Create game</button>
+        <br>
+        <input id='gameId' type="number" placeholder="Enter Room Id">
+        <button id='joinGame' class='btn btn-success my-2'>Join game</button>
+      </div>
 
+      <!-- board play -->
+          <div class="col-md-4 col-lg-6">
+            <div id="parent">
+              <div class="player-card player-2">
+                <div class="rows row-1">
+                  <div class="icon"></div>
+                  <div class="text">
+                    <div class="headline"><h4 class="text-white">Player 1</h4></div>
+                    <div class="status">
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rows row-2">
+                  <div class="timer">
+                    <span>00:00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="myBoard" style="width: 600px; margin:auto"></div>
+
+              <div class="player-card player-1">
+                <div class="rows row-2">
+                  <div class="timer">
+                    <span>00:00</span>
+                  </div>
+                </div>
+                <div class="rows row-1">
+                  <div class="icon"></div>
+                  <div class="text">
+                    <div class="headline"><h4 class="text-white">Player 2</h4></div>
+                    <div class="status">
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- review -->
+
+          <div id='gameControls' class="col-xl-4 col-md-12 mt-5">
+            <div class="card">
+                <div class="card-block">
+                    <div class="row">
+                        <div class="col">
+                            <h4>12</h4>
+                            <p class="text-muted">Move</p>
+                              <p class="text-muted">Room ID: 2108074408 <i class="icon icon-clone"></i></p>
+                        </div>
+                        <div class="col-auto">
+                            <label class="label label-danger">+20%</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                              <label for="" id="gameStatus"></label>
+                              <label for="" id='gamePGN' class="label-Sc">
+                              </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card quater-card  gad">
+              <div class="row">
+                <div class="col-md-2 col-sm-2 b"> <button class="btn waves-effect waves-light btn-inverse"><i class="icon icon-to-start"></i></button></div>
+                <div class="col-md-2 b"> <button class="btn  btn-inverse "><i class="icon icon-left-open-1"></i></button></div>
+                <div class="col-md-2 b"> <button class="btn waves-effect waves-light btn-inverse "><i class="icon icon-right-open-1"></i></button></div>
+                <div class="col-md-2 b"> <button class="btn waves-effect waves-light btn-inverse "><i class="icon icon-to-end"></i></button></div>
+                </div>
+            </div>
+            <div class="card quater-card">
+              <div class="row">
+                <div class="col-md-2 m-1 a"> <button class="btn waves-effect waves-light btn-danger btn-1"><i class="icon icon-road"></i></button></div>
+                <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1" alt="resign"><i class="icon icon-flag-empty"></i></button></div>
+                <div class="col-md-2 m-1 a"> <button class="btn waves-effect waves-light btn-danger btn-1"><i class="icon icon-retweet"></i></button></div>
+                <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1"><i class="icon icon-share"></i></button></div>
+                <div class="col-md-2 m-1 a"> <button class="btn  btn-danger btn-1"><i class="icon icon-cog"></i></button></div>
+                </div>
+            </div>
+
+            <!-- <div class="card quater-card">
+                <div class="card-block">
+                    <h6 class="text-muted m-b-15">Analysis</h6>
+
+                    <p class="text-muted">great <span>black</span></p>
+                    <h5>87</h5>
+                    <p class="text-muted">Black<span class="f-right">80%</span></p>
+                    <div class="progress"><div class="progress-bar bg-c-blue" style="width: 80%"></div></div>
+                    <h5 class="m-t-15">68</h5>
+                    <p class="text-muted">white<span class="f-right">50%</span></p>
+                    <div class="progress"><div class="progress-bar bg-c-green" style="width: 50%"></div></div>
+                </div>
+            </div> -->
+        </div>
+
+      <!-- End -->
+        <!-- right side -->
+
+    </div>
+  </div>
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6-r text-center copyright">
+          <p>© 2024 Fisher Club. All rights reserved.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 
 <script>const USER = "<%=session.user.id%>"</script>
 <script type='module' src="/main.js"></script>

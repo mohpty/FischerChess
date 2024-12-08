@@ -16,6 +16,7 @@ const db = mysql.createConnection({
 
 // Sign Up Route
 router.post('/signup', async (req, res) => {
+  console.log(req.body)
   const { username, password } = req.body;
 
   // Check if username already exists
@@ -23,11 +24,11 @@ router.post('/signup', async (req, res) => {
     if (err){
       req.flash('error_msg', 'Database error');
       // res.locals.message = req.flash();
-      return res.status(500).redirect('signup')
+      return res.status(500).redirect('/signup')
     };
     if (results.length > 0){
       req.flash('error_msg', 'Username already exists');
-      return res.status(400).redirect('signup');
+      return res.status(400).redirect('/signup');
     } 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -36,7 +37,7 @@ router.post('/signup', async (req, res) => {
     db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
       if (err){
         req.flash('error_msg', 'Database error');
-        return res.status(500).redirect('signup')
+        return res.status(500).redirect('/signup')
       };
       req.flash('success_msg', 'User created successfully');
       res.status(201).redirect('/login');

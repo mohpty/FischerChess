@@ -1,47 +1,116 @@
-<header class="masthead text-center text-white">
-  <div class="masthead-content">
-      <div class="container px-5">
-          <h1 class="masthead-heading mb-0">FischerChess</h1>
-          <h2 class="masthead-subheading mb-0">Unleash your inner chess grandmaster
+    <!-- main start -->
+    <section style="background-image: url('./images/back.png');background-repeat: no-repeat;background-size: cover;">
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-lg-6 pt-1 mt-3 cont">
+            <h2 class="display-1 ls-1 siz"><span class="fw-bold" id="cl">Online</span> Site<br> <span class="text-white"> our club</span><span class="fw-bold"> Matching</span></h2>
+            <p class="fs-4" id="gg">Lorem ipsum dolor sit amet</p>
+            <!-- Join Form -->
+            <div id="hide" class="hidden">
+            <form action="" class="row">
+              <div class="col-md-6"><input type="text" id="name" placeholder="Enter Rom ID : 291720123" class="form-control"></div>
+              <div class="col-md-4"> <input type="submit" class="btn btn-danger px-3 gap-1" id="bt"></div>
+            </form>
+            </div>
+            <!-- End Join Form -->
 
-          </h2>
-          <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#scroll">Learn More</a>
-      </div>
-  </div>
-  <div class="bg-circle-1 bg-circle"></div>
-  <div class="bg-circle-2 bg-circle"></div>
-  <div class="bg-circle-3 bg-circle"></div>
-  <div class="bg-circle-4 bg-circle"></div>
-</header>
+            <!-- buttons Cr or Jo -->
+            <div class="d-flex gap-3 res-bt">
+              <button href="#" class="btn btn-primary text-uppercase fs-6 rounded-3  px-4 py-3 mt-3" id="bt" onclick="">Create Match</button>
+              <a href="#" class="btn btn-dark text-uppercase fs-6 rounded-3 border-0 px-4 py-3 mt-3 text-white" onclick="toggForm()">Join To Match</a>
+            </div>
 
-<section id="scroll">
-  <div class="container px-5">
-      <div class="row gx-5 align-items-center">
-          <div class="col-lg-6 order-lg-2">
-              <div class="p-5"><img class="img-fluid rounded-circle" src="img/login.jpg" alt="..." /></div>
-          </div>
-          <div class="col-lg-6 order-lg-1">
-              <div class="p-5">
-                  <h2 class="display-4">For those about to rock...</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
+            <!-- Statistic Sec -->
+            <div class="row my-5">
+              <div class="col">
+                <div class="row text-white">
+                  <div class=""><p class="fs-1 fw-bold lh-sm mb-0 ">14k</p></div><br>
+                  <div class=""><p class="text-uppercase lh-sm mb-0">Online <br>Members</p></div>
+                </div>
+
               </div>
-          </div>
-      </div>
-  </div>
-</section>
-<!-- Content section 2-->
-<section>
-  <div class="container px-5">
-      <div class="row gx-5 align-items-center">
-          <div class="col-lg-6">
-              <div class="p-5"><img class="img-fluid rounded-circle" src="img/register.jpg" alt="..." /></div>
-          </div>
-          <div class="col-lg-6">
-              <div class="p-5">
-                  <h2 class="display-4">We salute you!</h2>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione voluptatum molestiae adipisci, beatae obcaecati.</p>
+              <div class="col">
+                <div class="row text-white">
+                  <div class="col"><p class="fs-1 fw-bold lh-sm mb-0">50k</p></div>
+                  <div class="col"><p class="text-uppercase lh-sm mb-0">Our <br> Customers</p></div>
+                </div>
               </div>
+              <div class="col">
+                <div class="row text-white">
+                  <div class="col"><p class="fs-1 fw-bold lh-sm mb-0">10k</p></div>
+                  <div class="col"><p class="text-uppercase lh-sm mb-0">lorm <br> Customers</p></div>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- Top Ranks Sec -->
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+              <h2 class="section-title text-white">Top Ranks</h2>
+
+              <div class="d-flex align-items-center">
+                <!-- <a href="#" class="btn btn-primary me-2" id="bt">View All</a> -->
+                <div class="swiper-buttons">
+                  <button class="swiper-prev toprank-carousel-prev btn btn-yellow" id="crl">❮</button>
+                  <button class="swiper-next toprank-carousel-next btn btn-yellow" id="crl">❯</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" >
+
+            <div class="toprank-carousel swiper">
+              <div class="swiper-wrapper sw">
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Abdulrhman Khalid</h4>
+                  <h5 class="fs-6" id="highlite">#1</h5> <h5 class="fs-6">2900</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Mohammed Fathi</h4>
+                  <h5 class="fs-6" id="highlite">#2</h5> <h5 class="fs-6">2600</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Hamid Yousif</h4>
+                  <h5 class="fs-6" id="highlite">#3</h5> <h5 class="fs-6">2400</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Ali Mohammed</h4>
+                  <h5 class="fs-6" id="highlite-Or">#4</h5> <h5 class="fs-6">2000</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Adil Hassan</h4>
+                  <h5 class="fs-6" id="highlite-Or">#5</h5> <h5 class="fs-6">1900</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Amani Albshir</h4>
+                  <h5 class="fs-6" id="highlite-Gr">#6</h5> <h5 class="fs-6">1850</h5>
+                </a>
+                <a href="category.html" class="nav-link swiper-slide text-center sw">
+                  <img src="./images/ged.png" class="rounded-circle" alt="Category Thumbnail" width="161px">
+                  <h4 class="fs-6 mt-3 fw-normal toprank-title text-white">Alkassash Hasslla</h4>
+                  <h5 class="fs-6" id="highlite-Gr">#7</h5> <h5 class="fs-6">1500</h5>
+                </a>
+
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-  </div>
-</section>
+      <!-- Footer -->

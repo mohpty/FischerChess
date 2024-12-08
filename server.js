@@ -66,7 +66,6 @@ app.use('/user', userRoutes); // Use the user routes
 // Expose user data to all template
 app.use(function(req, res, next) {
   res.locals.user = req.session.user;
-  console.log("Username is: ",req.session.user.name)
   next();
 });
 
