@@ -151,7 +151,7 @@ function setupSocket(server) {
                     return;
                 }
             })
-            
+            console.log(data.turn)
             const query = 'UPDATE games SET pgn = ? WHERE id = ?';
             db.query(query, [data.gamePGN, Number(data.room_id)], (err, results) => {
                 if (err) {
