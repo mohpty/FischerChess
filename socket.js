@@ -1,22 +1,26 @@
-// socket.js
 const { Server } = require("socket.io");
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
-// Create a connection to the database
-const db = mysql.createConnection({
+// Create a connection pool to the database
+const db = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'FischerChess'
+    database: 'FischerChess',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err);
-        return;
+// Utility function for database queries
+const executeQuery = async (query, params) => {
+    try {
+        const [results] = await db.query(query, params);
+        return results;
+    } catch (error) {
+        throw new Error(error.message);
     }
-    console.log('Connected to the database.');
-});
+};
 
 function setupSocket(server) {
     const io = new Server(server, {
@@ -29,217 +33,132 @@ function setupSocket(server) {
     io.on('connection', (socket) => {
         console.log(socket.id, ' is connected');
 
-        // Room creation
-        socket.on('createRoom', (data) => {
-            /*
-            Will create an issue when implementing matchmaking
-            The current situation is that if you created a game you can't create another,
-            or join another, but it should be modified so that you can join, but not create
-            KEEP THAT IN MIND
-            */
-            const user_id = data.user;
-            var query;
-            var room_id;
+        // Create a room
+        socket.on('createRoom', async (data) => {
+            try {
+                const userId = data.user;
 
-            // - Check if the user is on another room -> current_game == null
-            query = "SELECT current_game from users WHERE id = ?";
-            db.query(query, [user_id], (err,results) => {
-                if (err){
-                    console.error("Error Checking current game of the user, ", err);
-                    return;
+                // Check if the user is already in a game
+                const userResult = await executeQuery("SELECT current_game FROM users WHERE id = ?", [userId]);
+                if (userResult[0]?.current_game) {
+                    return socket.emit('error', { message: "You are already in a game." });
                 }
 
-                // - If not Create the game and return its id, 
-                // add the player as a player1, and the game id as current game
-                query = 'INSERT INTO games (player1_id, player2_id, pgn) VALUES (?, ?, ?)';
-                db.query(query, [user_id, null, null], (err, results) => {
-                    if (err) {
-                        console.error('Error saving game data:', err);
-                        return;
-                    }
-                    room_id = results.insertId
-                    // console.log('Game data saved with ID:', room_id);
-                    socket.join(room_id);
-                    query = "UPDATE users SET current_game = ? WHERE id = ?;"
-                    db.query(query, [room_id, user_id], (err, results) => {
-                        if (err) {
-                            console.error('Error changing current game field on user:', err);
-                            return;
-                        }
-                        console.log(`User current game has been updated to: ${room_id}`, results.insertId);
-                    });                
-                    socket.emit('roomCreated', room_id);
-                    console.log(`Room created: ${room_id}`);
+                // Create a new game
+                const gameResult = await executeQuery(
+                    "INSERT INTO games (player1_id, player2_id, pgn) VALUES (?, ?, ?)",
+                    [userId, null, null]
+                );
+                const roomId = gameResult.insertId;
 
-                });
-            })
-            
-            // socket.emit("roomExists", [roomId, rooms[roomId]]);
+                // Update the user's current game
+                await executeQuery("UPDATE users SET current_game = ? WHERE id = ?", [roomId, userId]);
 
+                // Join the room and notify the client
+                socket.join(roomId);
+                socket.emit('roomCreated', roomId);
+                console.log(`Room created: ${roomId}`);
+            } catch (error) {
+                console.error("Error in createRoom:", error);
+                socket.emit('error', { message: "Failed to create room." });
+            }
         });
 
-        // Room joining
-        socket.on('joinRoom', (data) => {
-            var room_id = data.room_id;
-            var user_id = data.user_id;
-            var query;
-            // Check if the user has a game going on
-            console.log("Trying to join", room_id);
-            // Check if the room is vacant
-            query = "select current_game from users where id = ?";
-            db.query(query, [user_id], (err, results) => {
-                if (err) {
-                    console.error('Error finding the player:', err);
-                    return;
-                }
-                if(results[0].current_game){
-                    console.error("You are currently in a game.");
-                    return;
-                }
-                else{
-                    let query = "select * from games where id = ?"; 
-                    db.query(query, [room_id], (err, results)=>{
-                        if(err){
-                            console.error("An error has occured retrieving the game", err);
-                        }
-                        if(results[0].started_at){
-                            console.error("Game has been started already.")
-                            return;
-                        }
-                        socket.join(room_id);
+        // Join a room
+        socket.on('joinRoom', async (data) => {
+            try {
+                const { room_id, user_id } = data;
 
-                        // Adding this game as the current game on the user record
-                        query = "UPDATE users SET current_game = ? WHERE id = ?;"
-                        db.query(query, [room_id, user_id], (err, results) => {
-                            if (err) {
-                                console.error('Error changing current game field on user:', err);
-                                return;
-                            }
-                            console.log(`User current game has been updated to: ${room_id}`, results.insertId);
-                        });
-                        
-                        // Add the user id as the second user on the game record
-                        query = "UPDATE games SET player2_id = ?, started_at = NOW() WHERE id = ?;"
-                        db.query(query, [user_id, room_id], (err, results) => {
-                            if (err) {
-                                console.error('Error changing current game field on user:', err);
-                                return;
-                            }
-                            console.log(`Game ${room_id} start time has been updated to the current datetime.`);
-                            console.log(`Player2_id of the game id ${room_id} has been updated to: ${user_id}`, results.insertId);
-                        });
-                        
-                        
-                        // Set the time of start for the game
-                        socket.emit('joinedRoom', room_id);
-                        io.emit('startGame', { room_id });
-                    })                 
-                    
+                // Check if the user is already in a game
+                const userResult = await executeQuery("SELECT current_game FROM users WHERE id = ?", [user_id]);
+                if (userResult[0]?.current_game) {
+                    return socket.emit('error', { message: "You are already in a game." });
                 }
-            });
+
+                // Check if the room exists and is vacant
+                const gameResult = await executeQuery("SELECT * FROM games WHERE id = ?", [room_id]);
+                if (gameResult.length === 0 || gameResult[0].started_at) {
+                    return socket.emit('error', { message: "Room is unavailable." });
+                }
+
+                // Update user and game records
+                await executeQuery("UPDATE users SET current_game = ? WHERE id = ?", [room_id, user_id]);
+                await executeQuery(
+                    "UPDATE games SET player2_id = ?, started_at = NOW() WHERE id = ?",
+                    [user_id, room_id]
+                );
+
+                // Notify users
+                socket.join(room_id);
+                socket.emit('joinedRoom', room_id);
+                io.emit('startGame', { room_id });
+                console.log(`User ${user_id} joined room ${room_id}`);
+            } catch (error) {
+                console.error("Error in joinRoom:", error);
+                socket.emit('error', { message: "Failed to join room." });
+            }
         });
 
-        socket.on('pieceMoved', data => {
-            db.query('select finished_at from games where id = ?', [Number(data.room_id)],(err, results) => {
-                if(err){
-                    console.error(err)
+        // Handle piece movement
+        socket.on('pieceMoved', async (data) => {
+            try {
+                const gameResult = await executeQuery("SELECT finished_at FROM games WHERE id = ?", [data.room_id]);
+                if (gameResult[0]?.finished_at) {
+                    return console.log("The game has already ended.");
                 }
 
-                console.log("FINISHED AT",results.finished_at, " | ", results['finished_at'], " $ ", results)
-                if(results.finished_at){
-                    console.log("The game has already ended");
-                    return;
-                }
-            })
-            console.log(data.turn)
-            const query = 'UPDATE games SET pgn = ? WHERE id = ?';
-            db.query(query, [data.gamePGN, Number(data.room_id)], (err, results) => {
-                if (err) {
-                    console.error('Error saving game data:', err);
-                    return;
-                }
-                console.log(`Game ${data.room_id} has been updated.`, results.insertId);
-                if (data.gameOver){
-                    var gameResult = getGameResult(data.game_over, data.in_check, data.in_checkmate, 
-                        data.in_draw, data.in_stalemate, 
-                        data.in_threefold_repetition,
-                        data.insufficient_material, data.turn);
-                    
-                    db.query("UPDATE users SET current_game = NULL WHERE id = ?", 
-                        [data.user_id],(err, results) => {
-                            if (err){
-                                console.error("Couldn't empty user current_game field", err);
-                            }
-                            console.log("User current game is null");
+                await executeQuery("UPDATE games SET pgn = ? WHERE id = ?", [data.gamePGN, data.room_id]);
 
-                            db.query("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
-                                [data.gameFen, gameResult, data.room_id],(err, results) => {
-                                    if (err){
-                                        console.error("Couldn't set final position", err);
-                                    }
-                                    console.log("Game is over, and the game's final position and result has been set");
-                                }
-                            )   
-                        }
-                    )
+                if (data.gameOver) {
+                    const gameResult = getGameResult(data);
+                    await executeQuery("UPDATE games SET final_position = ?, result = ?, finished_at = NOW() WHERE id = ?", 
+                        [data.gameFen, gameResult, data.room_id]);
+                    await executeQuery("UPDATE users SET current_game = NULL WHERE id = ?", [data.user_id]);
                 }
-            });
-            
-            // Optionally, you can emit an event to notify players that the game is over
-            // io.to(data.roomId).emit('gameOver', { message: 'Game Over!' });
-            io.emit('gameState', data);
+
+                io.emit('gameState', data);
+            } catch (error) {
+                console.error("Error in pieceMoved:", error);
+            }
         });
 
-        socket.on('resign', data => {
-            // Update pgn
-            var resignedPlayer = data.player_id;
-            var player1_id, player2_id;
-            let pgn = data.pgn;
-            let result;
-            // Check if the player has the black or white pieces
-            
-            let query = "select player1_id, player2_id from games where id = ?";
-            db.query(query, [data.game_id], (err, results)=>{
-                
-                if(err){
-                    console.error(err);
-                }
-                // console.log("Results:", results[0])
-                player1_id = results[0].player1_id;
-                player2_id = results[0].player2_id;
-                if(data.player_id === results[0].player1_id){
-                    pgn += " 0-1"
-                    result = "0-1"
-                }
-                else if(data.player_id === results[0].player2_id){
-                    pgn += " 1-0"
-                    result = "1-0"
-                }
-                else{
-                    console.log("Player_id isn't correct")
-                    return
-                }
-                let query = "UPDATE games SET pgn = ? ,final_position = ?, finished_at = NOW(), result = ? WHERE id = ?";
-                db.query(query, [pgn, data.fen, result, data.game_id], (err, results)=>{
-                    if (err){
-                        console.error(err)
-                    }
-                    // console.log(`p1: ${player1_id}, p2: ${player2_id}`)
+        // Handle resignation
+        socket.on('resign', async (data) => {
+            try {
+                const { player_id, game_id, pgn, fen } = data;
 
-                    db.query("UPDATE users SET current_game = NULL WHERE id = ? OR id = ?", 
-                        [player1_id, player2_id], (err, results)=>{
-                            if(err){console.error(err)}
-                            socket.to(data.game_id).emit("gameState", {gameId:data.room_id,resign:resignedPlayer})
-                            socket.leave(data.game_id);
-                            // console.log(`Player with id ${data.player_id} is saying waaai\n and cannot complete game ${data.game_id}`);
-                        }
-                    )
-                });
-            });
+                const gameData = await executeQuery("SELECT player1_id, player2_id FROM games WHERE id = ?", [game_id]);
+                const { player1_id, player2_id } = gameData[0];
 
-            
-        })
+                let result;
+                if (player_id === player1_id) {
+                    result = "0-1";
+                } else if (player_id === player2_id) {
+                    result = "1-0";
+                } else {
+                    return console.log("Invalid player ID for this game.");
+                }
 
+                const updatedPgn = `${pgn} ${result}`;
+
+                await executeQuery(
+                    "UPDATE games SET pgn = ?, final_position = ?, finished_at = NOW(), result = ? WHERE id = ?",
+                    [updatedPgn, fen, result, game_id]
+                );
+
+                await executeQuery(
+                    "UPDATE users SET current_game = NULL WHERE id = ? OR id = ?",
+                    [player1_id, player2_id]
+                );
+
+                socket.to(game_id).emit("gameState", { gameId: game_id, resign: player_id });
+                socket.leave(game_id);
+            } catch (error) {
+                console.error("Error in resign:", error);
+            }
+        });
+
+        // Handle disconnection
         socket.on('disconnect', () => {
             console.log(socket.id, " Disconnected");
         });
@@ -248,31 +167,15 @@ function setupSocket(server) {
     return io;
 }
 
-function getGameResult(game_over, in_check, in_checkmate, in_draw, in_stalemate, in_threefold_repetition, insufficient_material, turn){
-      if (in_checkmate && turn === 'w') {
-        return "0-1";
-      }
-      else if (in_checkmate && turn === 'b') {
-        return "1-0";
-      }
-      else if (in_stalemate && turn === 'w') {
-        // white is stalemated
-        return "½–½";
-      }
-      else if (in_stalemate && turn === 'b') {
-        // Black is stalemated
-        return "½–½";
-      }
-      else if (in_threefold_repetition) {
-        return "½–½";
-      }
-      else if (insufficient_material) {
-        return "½–½"
-      }
-      else if (in_draw){
-        // Fifty move rule
-        return "½–½";
-      }
+function getGameResult(data) {
+    const {
+        game_over, in_check, in_checkmate, in_draw,
+        in_stalemate, in_threefold_repetition, insufficient_material, turn
+    } = data;
+
+    if (in_checkmate) return turn === 'w' ? "0-1" : "1-0";
+    if (in_draw || in_stalemate || in_threefold_repetition || insufficient_material) return "½–½";
+    return "½–½";
 }
 
 module.exports = setupSocket;
