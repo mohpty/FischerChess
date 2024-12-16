@@ -34,7 +34,7 @@ const mysqlConnection = mysql.createConnection({
 const sessionStore = new MySQLStore({}, mysqlConnection);
 
 // Session configuration
-app.use(session({
+const sessionMiddleware = session({
   key: 'session_cookie',
   secret: 'ABC_DEFGHIJKLMNOPQRSTUVWX_YZ', // Change to a strong secret
   store: sessionStore,
@@ -43,7 +43,9 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
-}));
+});
+
+app.use(sessionMiddleware);
 
 
 // Connect to MySQL
@@ -57,6 +59,10 @@ mysqlConnection.connect(err => {
 
 // Set up Socket.IO
 const io = setupSocket(server); // Call the setupSocket function and pass the server instance
+
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next)
+})
 
 // Use the routes
 app.use('/', routes); // Use the imported routes

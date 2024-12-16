@@ -80,18 +80,22 @@ function setupSocket(server) {
                 if (gameResult.length === 0 || gameResult[0].started_at) {
                     return socket.emit('error', { message: "Room is unavailable." });
                 }
-
+                var opponentId = gameResult[0].player1_id;
+                var opponentUsername = await executeQuery("SELECT username FROM users WHERE id = ?", [opponentId])
+                const players = {
+                    player1: {id:opponentId, username: opponentUsername[0].username}, 
+                    player2: {id: socket.request.session.user.id, username:socket.request.session.user.name}}
                 // Update user and game records
                 await executeQuery("UPDATE users SET current_game = ? WHERE id = ?", [room_id, user_id]);
                 await executeQuery(
                     "UPDATE games SET player2_id = ?, started_at = NOW() WHERE id = ?",
                     [user_id, room_id]
                 );
-
+                console.log("Opponent username: ",opponentUsername)
                 // Notify users
                 socket.join(room_id);
                 socket.emit('joinedRoom', room_id);
-                io.emit('startGame', { room_id });
+                io.emit('startGame', { room_id: room_id, players: players });
                 console.log(`User ${user_id} joined room ${room_id}`);
             } catch (error) {
                 console.error("Error in joinRoom:", error);

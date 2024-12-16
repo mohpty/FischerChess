@@ -324,10 +324,12 @@ socket.on('startGame', data => {
   gameId = data.room_id;
   board.start();
   eventsSetup();
+  const opponent = data.players.player1.id === Number(USER) ? data.players.player2.username : data.players.player1.username;
   $('#gameStatus').show();
   $("#gameControls").show();
   $('.matchMakingButtons').fadeOut(250);
   $('#matchMakingStatus').fadeOut(250);
+  $("#opponentUsername").text(opponent);
   updatePGN();
   updateStatus();
 })
